@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const tourRoutes = require('./routes/tours-routes');
 const usersRoutes = require('./routes/users-routes');
