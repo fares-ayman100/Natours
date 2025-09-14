@@ -1,11 +1,11 @@
 const httpStatus = require('../utils/http-status');
 const Tour = require('../Models/toursModel');
 const aliasTopTours = (req, res, next) => {
-  req.query.limit = '5';
-  req.query.sort = '-ratingAverage,price';
-  req.query.fields = 'name,price,ratingAverage,summary,difficulty';
+  req.url =
+    '/?sort=-ratingAverage,price&fields=ratingsAverage,price,name,ratingAverage,difficulty,summary&limit=5';
   next();
 };
+
 
 const getAllTours = async (req, res) => {
   try {
