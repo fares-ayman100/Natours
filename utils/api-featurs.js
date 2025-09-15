@@ -3,7 +3,7 @@ class APIFeatures {
     this.query = query;
     this.queryString = queryString;
   }
-  Filtering() {
+  Filter() {
     const queryObj = { ...this.queryString };
     const execudedField = ['page', 'sort', 'limit', 'fields'];
     execudedField.forEach((el) => {
@@ -13,7 +13,7 @@ class APIFeatures {
     //1B) Advanced Filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gt|lt|gte|lte)\b/g, (match) => `$${match}`);
-    this.query.find(JSON.parse(queryStr));
+    this.query = this.query.find(JSON.parse(queryStr));
     return this;
   }
   Sort() {
@@ -34,7 +34,7 @@ class APIFeatures {
     }
     return this;
   }
-  Fielding() {
+  Pagination() {
     const page = this.queryString.page * 1 || 1;
     const limit = this.queryString.limit * 1;
 
