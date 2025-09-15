@@ -3,7 +3,7 @@ const APIFeatures = require('../utils/api-featurs');
 const Tour = require('../Models/toursModel');
 const aliasTopTours = (req, res, next) => {
   req.url =
-    '/?sort=-ratingAverage,price&fields=ratingsAverage,price,name,ratingAverage,difficulty,summary&limit=5';
+    '/?sort=-ratingsAverage,price&fields=ratingsAverage,price,name,ratingAverage,difficulty,summary&limit=5';
   next();
 };
 
@@ -94,6 +94,45 @@ const tourStats = async (req, res) => {
     res.status(404).json({ status: httpStatus.FAILD, message: err.message });
   }
 };
+const monthlyPlan = async (req, res) => {
+  try {
+    const year = req.params.year;
+    const month = await Tour.aggregate([
+      {
+        $unwind: '$startDates',
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numTour: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+      { $addFields: { month: '$_id' } },
+      {
+        $project: { _id: 0 },
+      },
+      {
+        $sort: {
+          month: 1,
+        },
+      },
+    ]);
+    res.status(200).json({ status: httpStatus.SUCCESS, data: month });
+  } catch (err) {
+    res
+      .status(404)
+      .json({ status: httpStatus.FAILD, message: err.message });
+  }
+};
 module.exports = {
   getAllTours,
   getTour,
@@ -102,4 +141,5 @@ module.exports = {
   createTour,
   aliasTopTours,
   tourStats,
+  monthlyPlan,
 };
