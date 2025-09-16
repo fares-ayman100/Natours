@@ -42,7 +42,9 @@ const createTour = async (req, res) => {
       .status(201)
       .json({ status: httpStatus.SUCCESS, data: { tour: newTour } });
   } catch (err) {
-    res.status(400).json({ status: httpStatus.FAILD, message: err });
+    res
+      .status(400)
+      .json({ status: httpStatus.FAILD, message: err.message });
   }
 };
 const updateTour = async (req, res) => {
@@ -53,7 +55,9 @@ const updateTour = async (req, res) => {
     });
     res.status(200).json({ status: httpStatus.SUCCESS, data: { tour } });
   } catch (err) {
-    res.status(400).json({ status: httpStatus.FAILD, message: err });
+    res
+      .status(400)
+      .json({ status: httpStatus.FAILD, message: err.message });
   }
 };
 const deleteTour = async (req, res) => {
