@@ -2,9 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const tourRoutes = require('./routes/tours-routes');
 const usersRoutes = require('./routes/users-routes');
-const httpStatus = require('./utils/http-status');
 const AppError = require('./utils/appError');
-const ErrorController = require('./controllers/errorController');
 const errorController = require('./controllers/errorController');
 const app = express();
 

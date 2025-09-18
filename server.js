@@ -1,3 +1,9 @@
+//Uncaught Exception
+process.on('uncaughtException', (err) => {
+  console.log(err.name, err.message);
+  process.exit(1);
+});
+
 require('dotenv').config();
 const mongoose = require('mongoose');
 const app = require('./index');
@@ -9,6 +15,15 @@ mongoose.connect(DB).then(() => {
   console.log('Connection Successful');
 });
 const Port = process.env.PORT || 3000;
-app.listen(Port, () => {
+const server = app.listen(Port, () => {
   console.log(`🚀 Server running on port ${Port}`);
+});
+
+//Unhandled Rejection
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
+  console.log('Unhandled Rejection !💥Shutdown...');
+  server.close(() => {
+    process.exit(1);
+  });
 });
