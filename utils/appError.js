@@ -1,4 +1,4 @@
-const httpStatus = require('./http-status');
+const httpStatus = require('./httpStatus');
 class AppError extends Error {
   constructor(message, statusCode) {
     super(message);

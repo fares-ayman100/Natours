@@ -1,5 +1,5 @@
-const httpStatus = require('../utils/http-status');
-const APIFeatures = require('../utils/api-featurs');
+const httpStatus = require('../utils/httpStatus');
+const APIFeatures = require('../utils/apiFeaturs');
 const Tour = require('../Models/toursModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');

@@ -1,4 +1,4 @@
-const httpStatus = require('../utils/http-status');
+const httpStatus = require('../utils/httpStatus');
 const getAllUsers = (req, res) => {
   res.status(500).json({
     status: httpStatus.ERROR,

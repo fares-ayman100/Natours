@@ -1,5 +1,5 @@
 const AppError = require('../utils/appError');
-const httpStatus = require('../utils/http-status');
+const httpStatus = require('../utils/httpStatus');
 
 const handelCastErrorDB = (err) => {
   const message = `Inavalid ${err.path}:${err.value}`;
