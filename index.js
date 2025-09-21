@@ -1,9 +1,9 @@
 const express = require('express');
 const morgan = require('morgan');
-const tourRoutes = require('./routes/tours-routes');
-const usersRoutes = require('./routes/users-routes');
-const AppError = require('./utils/appError');
+const tourRoutes = require('./routes/toursRoutes');
+const usersRoutes = require('./routes/usersRoutes');
 const errorController = require('./controllers/errorController');
+const AppError = require('./utils/appError');
 const app = express();
 
 // Middleware
