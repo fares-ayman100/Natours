@@ -7,7 +7,7 @@ router.route('/signup').post(authcontroller.signup);
 router.route('/signin').post(authcontroller.signin);
 router
   .route('/')
-  .get(controller.getAllUsers)
+  .get(authcontroller.protect, controller.getAllUsers)
   .post(controller.addUser);
 router
   .route('/:id')

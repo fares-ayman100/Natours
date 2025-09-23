@@ -16,6 +16,15 @@ const handelValidatorErrorDB = (err) => {
   const message = `Invalid Input Data. ${errors.join('. ')}`;
   return new AppError(message, 400);
 };
+const handelTokenInvalid = () => {
+  return new AppError('Token is invalid', 401);
+};
+const handelTokenExpired = () => {
+  return new AppError(
+    'Your session has expired. Please log in again',
+    401,
+  );
+};
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -35,6 +44,7 @@ const sendErrorProd = (err, res) => {
   }
   //Programming Error
   else {
+    console.log(err);
     res
       .status(500)
       .json({ status: 'faild', message: 'some thing is wrong' });
@@ -57,6 +67,12 @@ module.exports = (err, req, res, next) => {
     }
     if (error.name == 'ValidationError') {
       error = handelValidatorErrorDB(error);
+    }
+    if (error.name == 'JsonWebTokenError') {
+      error = handelTokenInvalid();
+    }
+    if (error.name == 'TokenExpiredError') {
+      error = handelTokenExpired();
     }
     sendErrorProd(error, res);
   }
