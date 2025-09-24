@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordConfirm: {
     type: String,
-    required: [true, 'passwordConfirm is required'],
+    required: [true, 'Please confirm your password'],
     validate: {
       validator: function (el) {
         return el === this.password;
@@ -41,6 +41,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
+  passwordResetTokenExpired: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -74,7 +75,9 @@ userSchema.methods.createResetPasswordToken = function () {
     .createHash('sha256')
     .update(resetToken)
     .digest('hex');
+    
   console.log({ resetToken }, this.passwordResetToken);
+  this.passwordResetTokenExpired = Date.now() + 10 * 60 + 1000;
 
   return resetToken;
 };
