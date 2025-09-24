@@ -48,8 +48,26 @@ const signin = catchAsync(async (req, res, next) => {
     data: { token },
   });
 });
+const forgetPassword = catchAsync(async (req, res, next) => {
+  // get user by post email
+  if (!req.body || !req.body.email) {
+    return next(new AppError('Please provide your email', 400));
+  }
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return next(
+      new AppError('There is no user with email address', 404),
+    );
+  }
+  // reset token
+
+  const resetToken = user.createResetPasswordToken();
+  await user.save({ validateBeforeSave: false });
+});
 
 module.exports = {
   signup,
   signin,
+  forgetPassword,
 };

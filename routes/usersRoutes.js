@@ -9,6 +9,11 @@ router.route('/signup').post(authcontroller.signup);
 
 router.route('/signin').post(authcontroller.signin);
 
+router.route('/forgetPassword').post(authcontroller.forgetPassword);
+
+//router.route('/resetPassword').post(authcontroller.);
+
+
 router
   .route('/')
   .get(protect, controller.getAllUsers)
