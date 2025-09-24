@@ -25,6 +25,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
 });
 
 const getTour = catchAsync(async (req, res, next) => {
+  console.log(req.params.id);
   const tour = await Tour.findById(req.params.id);
   if (!tour) {
     return next(new AppError('Tour Is Not Found', 404));
