@@ -14,13 +14,6 @@ const getUser = async (req, res) => {
     message: user,
   });
 };
-const addUser = async (req, res) => {
-  const user = await User.create(req.body);
-  res.status(200).json({
-    status: httpStatus.SUCCESS,
-    message: user,
-  });
-};
 const updateUser = async (req, res) => {
   const user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -41,7 +34,6 @@ const deleteUser = async (req, res) => {
 module.exports = {
   getAllUsers,
   getUser,
-  addUser,
   updateUser,
   deleteUser,
 };

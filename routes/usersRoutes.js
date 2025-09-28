@@ -19,8 +19,6 @@ router
 router
   .route('/')
   .get(protect, controller.getAllUsers)
-  .post(protect, controller.addUser);
-
 router
   .route('/:id')
   .get(controller.getUser)

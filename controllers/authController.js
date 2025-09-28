@@ -1,10 +1,10 @@
+const crypto = require('crypto');
 const httpStatus = require('../utils/httpStatus');
 const User = require('../Models/usersModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const generateAccessToken = require('../utils/generateAccessToken');
 const sendEmail = require('../utils/email');
-const email = require('../utils/email');
 
 const signup = catchAsync(async (req, res, next) => {
   const { email } = req.body;
@@ -18,7 +18,7 @@ const signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    passwordChangedAt: req.body.passwordChangedAt,
+    //passwordChangedAt: req.body.passwordChangedAt,
   });
 
   const token = generateAccessToken({ id: newUser._id });
@@ -69,10 +69,10 @@ const forgetPassword = catchAsync(async (req, res, next) => {
 
   // send email
   const resetURL = `${req.protocol}://${req.get('host')}
-  // /api/v1/users/resetPassword/${resetToken}`;
-  const message = `Forget your password? Submit a pathc request with your
+  /api/v1/users/resetPassword/${resetToken}`;
+  const message = `Forget your password? Submit a patch request with your
   new password and passwordConfirm to: ${resetURL}\n if your didn't forget
-  your password ,Please ignore this email .`;
+  your password ,Please ignore this email.`;
 
   try {
     await sendEmail({
@@ -96,7 +96,42 @@ const forgetPassword = catchAsync(async (req, res, next) => {
     );
   }
 });
-const resetPassword = catchAsync(async (req, res, next) => {});
+const resetPassword = catchAsync(async (req, res, next) => {
+  // get the user based on the token
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetTokenExpired: { $gt: Date.now() },
+  });
+  // check if token is not expired and the user found set new password
+
+  if (!user) {
+    return next(new AppError('Invalid token or token is expired'));
+  }
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  user.passwordResetToken = undefined;
+  user.passwordResetTokenExpired = undefined;
+  await user.save();
+
+  // set the new changePasswordAt
+  // log the user in and send jwt
+  if (!req.body || !req.body.password || !req.body.passwordConfirm) {
+    return next(
+      new AppError('Password and confirm password are required', 400),
+    );
+  }
+
+  const token = generateAccessToken({ id: user._id });
+  res.status(200).json({
+    status: httpStatus.SUCCESS,
+    token,
+  });
+});
 
 module.exports = {
   signup,
