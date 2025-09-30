@@ -22,6 +22,7 @@ const signup = catchAsync(async (req, res, next) => {
 
   createSendToken(newUser, 201, res, { data: newUser });
 });
+
 const signin = catchAsync(async (req, res, next) => {
   const { email, password } = req.body || {};
   if (!email || !password) {
@@ -40,6 +41,7 @@ const signin = catchAsync(async (req, res, next) => {
     message: 'Logged in successfuly',
   });
 });
+
 const forgetPassword = catchAsync(async (req, res, next) => {
   // get user by post email
   if (!req.body || !req.body.email) {
@@ -86,6 +88,7 @@ const forgetPassword = catchAsync(async (req, res, next) => {
     );
   }
 });
+
 const resetPassword = catchAsync(async (req, res, next) => {
   // get the user based on the token
   const hashedToken = crypto
@@ -119,6 +122,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
   }
   createSendToken(user, 200, res);
 });
+
 const updatedPassword = catchAsync(async (req, res, next) => {
   const { currentPassword, newPassword, passwordConfirm } =
     req.body || {};
@@ -172,4 +176,5 @@ module.exports = {
   forgetPassword,
   resetPassword,
   updatedPassword,
+  
 };
