@@ -12,7 +12,7 @@ module.exports = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  if (!token) {
+  if (!token || token == 'null') {
     return next(new AppError('Please Login and try again', 401));
   }
 

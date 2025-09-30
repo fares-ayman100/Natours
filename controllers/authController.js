@@ -3,8 +3,8 @@ const httpStatus = require('../utils/httpStatus');
 const User = require('../Models/usersModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
-const generateAccessToken = require('../utils/generateAccessToken');
 const sendEmail = require('../utils/email');
+const createSendToken = require('../utils/createSendToken');
 
 const signup = catchAsync(async (req, res, next) => {
   const { email } = req.body;
@@ -18,19 +18,12 @@ const signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    //passwordChangedAt: req.body.passwordChangedAt,
   });
 
-  const token = generateAccessToken({ id: newUser._id });
-
-  res.status(201).json({
-    status: httpStatus.SUCCESS,
-    token,
-    data: { user: newUser },
-  });
+  createSendToken(newUser, 201, res, { data: newUser });
 });
 const signin = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body || {};
   if (!email || !password) {
     return next(new AppError('Email and Pasword Is Required', 400));
   }
@@ -42,12 +35,9 @@ const signin = catchAsync(async (req, res, next) => {
   ) {
     return next(new AppError('Incorrect email or password', 401));
   }
-  const token = generateAccessToken({ id: user._id });
 
-  res.status(200).json({
-    status: httpStatus.SUCCESS,
-    message: 'Logged in Successful',
-    data: { token },
+  createSendToken(user, 200, res, {
+    message: 'Logged in successfuly',
   });
 });
 const forgetPassword = catchAsync(async (req, res, next) => {
@@ -110,7 +100,9 @@ const resetPassword = catchAsync(async (req, res, next) => {
   // check if token is not expired and the user found set new password
 
   if (!user) {
-    return next(new AppError('Invalid token or token is expired'));
+    return next(
+      new AppError('Invalid token or token is expired', 404),
+    );
   }
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
@@ -125,12 +117,53 @@ const resetPassword = catchAsync(async (req, res, next) => {
       new AppError('Password and confirm password are required', 400),
     );
   }
+  createSendToken(user, 200, res);
+});
+const updatedPassword = catchAsync(async (req, res, next) => {
+  const { currentPassword, newPassword, passwordConfirm } =
+    req.body || {};
 
-  const token = generateAccessToken({ id: user._id });
-  res.status(200).json({
-    status: httpStatus.SUCCESS,
-    token,
-  });
+  // 1) check inputs
+  if (!currentPassword || !newPassword || !passwordConfirm) {
+    return next(
+      new AppError(
+        'Current password, new password and passwordConfirm are required',
+        400,
+      ),
+    );
+  }
+
+  // 2) get user with password
+  const user = await User.findById(req.user.id).select('+password');
+
+  // 3) check current password
+  const isPasswordCorrect = await user.correctPassword(
+    currentPassword,
+    user.password,
+  );
+  if (!isPasswordCorrect) {
+    return next(
+      new AppError('The current password is incorrect', 401),
+    );
+  }
+
+  // 4) check new != old
+  if (currentPassword === newPassword) {
+    return next(
+      new AppError(
+        'New password must be different from the current password',
+        400,
+      ),
+    );
+  }
+
+  // 5) update password (only if all checks passed)
+  user.password = newPassword;
+  user.passwordConfirm = passwordConfirm;
+  await user.save();
+
+  // 6) issue new token
+  createSendToken(user, 200, res, { message: 'Password is Updated' });
 });
 
 module.exports = {
@@ -138,4 +171,5 @@ module.exports = {
   signin,
   forgetPassword,
   resetPassword,
+  updatedPassword,
 };
