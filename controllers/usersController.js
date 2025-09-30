@@ -1,5 +1,9 @@
 const httpStatus = require('../utils/httpStatus');
 const User = require('../Models/usersModel');
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
+const filterdOBJ = require('../utils/filterObject');
+
 const getAllUsers = async (req, res) => {
   const users = await User.find({}, { __v: false });
   res.status(200).json({
@@ -7,13 +11,44 @@ const getAllUsers = async (req, res) => {
     message: users,
   });
 };
-const getUser = async (req, res) => {
+
+const updatedMe = catchAsync(async (req, res, next) => {
+  if (req.body.password || req.body.passwordConfirm) {
+    return next(
+      new AppError(
+        'This route is not for password updates. Please user /updatePassword.',
+        400,
+      ),
+    );
+  }
+  const filterdBody = filterdOBJ(req.body, 'name', 'email');
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    filterdBody,
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+  res.status(200).json({
+    status: httpStatus.SUCCESS,
+    data: user,
+  });
+});
+
+const getUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
+  if (!user) {
+    return new AppError('User is not found', 404);
+  }
   res.status(200).json({
     status: httpStatus.SUCCESS,
     message: user,
   });
-};
+});
+
+//*********
+
 const updateUser = async (req, res) => {
   const user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -24,6 +59,7 @@ const updateUser = async (req, res) => {
     message: user,
   });
 };
+
 const deleteUser = async (req, res) => {
   await User.findByIdAndDelete(req.params.id);
   res.status(200).json({
@@ -31,9 +67,11 @@ const deleteUser = async (req, res) => {
     message: null,
   });
 };
+
 module.exports = {
   getAllUsers,
   getUser,
   updateUser,
   deleteUser,
+  updatedMe,
 };
