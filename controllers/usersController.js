@@ -8,11 +8,13 @@ const getAllUsers = async (req, res) => {
   const users = await User.find({}, { __v: false });
   res.status(200).json({
     status: httpStatus.SUCCESS,
+    result: users.length,
     message: users,
   });
 };
 
 const updatedMe = catchAsync(async (req, res, next) => {
+  // check if user pass password in the body
   if (req.body.password || req.body.passwordConfirm) {
     return next(
       new AppError(
@@ -21,8 +23,12 @@ const updatedMe = catchAsync(async (req, res, next) => {
       ),
     );
   }
+
+  // filter fields
   const filterdBody = filterdOBJ(req.body, 'name', 'email');
-  const user = await User.findByIdAndUpdate(
+
+  //Update user document
+  const updateUser = await User.findByIdAndUpdate(
     req.user.id,
     filterdBody,
     {
@@ -32,8 +38,15 @@ const updatedMe = catchAsync(async (req, res, next) => {
   );
   res.status(200).json({
     status: httpStatus.SUCCESS,
-    data: user,
+    data: updateUser,
   });
+});
+
+const deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, {
+    active: false,
+  });
+  res.status(204).json({ status: httpStatus.SUCCESS });
 });
 
 const getUser = catchAsync(async (req, res, next) => {
@@ -74,4 +87,5 @@ module.exports = {
   updateUser,
   deleteUser,
   updatedMe,
+  deleteMe,
 };
