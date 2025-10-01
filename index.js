@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const tourRoutes = require('./routes/toursRoutes');
 const usersRoutes = require('./routes/usersRoutes');
@@ -7,6 +8,7 @@ const errorController = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const app = express();
 
+// Limit request from the same IP
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   limit: 100,
@@ -16,13 +18,21 @@ const limiter = rateLimit({
 });
 
 // Global Middleware
+// Set Http Headers security
+app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
 app.use('/api', limiter);
-app.use(express.json());
+
+// Body parser reading the data form req.body
+app.use(express.json({ limit: '10kb' }));
 app.use(express.static(`${__dirname}/public`));
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 
 // Routes
 app.use('/api/v1/tours', tourRoutes);
