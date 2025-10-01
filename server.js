@@ -4,13 +4,12 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
-const qs = require('qs');
-const app = require('./index');
+ require('dotenv').config();
+ const mongoose = require('mongoose');
+ const qs = require('qs');
+ const app = require('./index');
 
-app.set('query parser', (str) => qs.parse(str));
-dotenv.config();
+ app.set('query parser', (str) => qs.parse(str));
 const DB = process.env.DATABASE;
 mongoose.connect(DB).then(() => {
   console.log('Connection Successful');

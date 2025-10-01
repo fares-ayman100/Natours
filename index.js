@@ -23,6 +23,7 @@ app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+console.log('nodeenv', process.env.NODE_ENV);
 
 app.use('/api', limiter);
 
