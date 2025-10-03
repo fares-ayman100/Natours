@@ -6,6 +6,8 @@ const tourRoutes = require('./routes/toursRoutes');
 const usersRoutes = require('./routes/usersRoutes');
 const errorController = require('./controllers/errorController');
 const AppError = require('./utils/appError');
+const htmlSanitize = require('./Middleware/htmlSanitize');
+const mongoSanitize = require('./Middleware/querySanitize');
 const app = express();
 
 // Limit request from the same IP
@@ -18,17 +20,20 @@ const limiter = rateLimit({
 });
 
 // Global Middleware
+
 // Set Http Headers security
 app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-console.log('nodeenv', process.env.NODE_ENV);
-
 app.use('/api', limiter);
 
 // Body parser reading the data form req.body
 app.use(express.json({ limit: '10kb' }));
+// Sanitize Query 
+app.use(mongoSanitize)
+// Sanitize data from malitious Html script
+app.use(htmlSanitize);
 app.use(express.static(`${__dirname}/public`));
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
