@@ -16,15 +16,18 @@ const handelValidatorErrorDB = (err) => {
   const message = `Invalid Input Data. ${errors.join('. ')}`;
   return new AppError(message, 400);
 };
+
 const handelTokenInvalid = () => {
   return new AppError('Token is invalid', 401);
 };
+
 const handelTokenExpired = () => {
   return new AppError(
     'Your session has expired. Please log in again',
     401,
   );
 };
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
