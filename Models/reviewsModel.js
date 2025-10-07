@@ -29,6 +29,7 @@ const reviewSchema = new mongoose.Schema(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    id: false,
   },
 );
 const review = mongoose.model('Review', reviewSchema);

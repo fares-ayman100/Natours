@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const tourRoutes = require('./routes/toursRoutes');
 const usersRoutes = require('./routes/usersRoutes');
+const reviewsRoutes = require('./routes/reviewsRoutes');
 const errorController = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const htmlSanitize = require('./Middleware/htmlSanitize');
@@ -46,6 +47,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', usersRoutes);
+app.use('/api/v1/reviews', reviewsRoutes);
 app.use((req, res, next) => {
   next(
     new AppError(
