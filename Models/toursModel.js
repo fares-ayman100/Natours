@@ -116,13 +116,15 @@ const tourSchema = new mongoose.Schema(
       },
     ],
   },
-
+  // to make virtual field show with another field in output
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
     id: false,
   },
 );
+
+// Virtual does not store in the database but calculated when we need
 tourSchema.virtual('durationsWeeks').get(function () {
   return this.duration / 7;
 });
