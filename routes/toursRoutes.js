@@ -1,9 +1,11 @@
 const express = require('express');
 const tourController = require('../controllers/toursController');
-const reviewController = require('../controllers/reviewsController');
+const reviewRouter = require('../routes/reviewsRoutes');
 const protect = require('../Middleware/protect');
 const allawedTo = require('../Middleware/allawedTo');
 const router = express.Router();
+
+router.use('/:tourID/reviews', reviewRouter);
 
 router
   .route('/top-5-cheap')
@@ -38,7 +40,5 @@ router
     tourController.deleteTour,
   );
 
-router
-  .route('/:tourID/reviews')
-  .post(protect,allawedTo('user'),reviewController.createReview);  
+ 
 module.exports = router;
