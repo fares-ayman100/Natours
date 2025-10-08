@@ -1,37 +1,44 @@
 const express = require('express');
-const controller = require('../controllers/toursController');
+const tourController = require('../controllers/toursController');
+const reviewController = require('../controllers/reviewsController');
 const protect = require('../Middleware/protect');
 const allawedTo = require('../Middleware/allawedTo');
 const router = express.Router();
 
 router
   .route('/top-5-cheap')
-  .get(controller.aliasTopTours, controller.getAllTours);
+  .get(tourController.aliasTopTours, tourController.getAllTours);
 
-router.route('/tours-stats').get(controller.tourStats);
+router.route('/tours-stats').get(tourController.tourStats);
 
-router.route('/monthly-plan/:year').get(controller.monthlyPlan);
+router
+  .route('/monthly-plan/:year')
+  .get(tourController.monthlyPlan);
 
 router
   .route('/')
-  .get(protect, controller.getAllTours)
+  .get(protect, tourController.getAllTours)
   .post(
     protect,
     allawedTo('admin', 'lead-guide'),
-    controller.createTour,
+    tourController.createTour,
   );
 
 router
   .route('/:id')
-  .get(controller.getTour)
+  .get(tourController.getTour)
   .patch(
     protect,
     allawedTo('admin', 'lead-guide'),
-    controller.updateTour,
+    tourController.updateTour,
   )
   .delete(
     protect,
     allawedTo('admin', 'lead-guide'),
-    controller.deleteTour,
+    tourController.deleteTour,
   );
+
+router
+  .route('/:tourID/reviews')
+  .post(protect,allawedTo('user'),reviewController.createReview);  
 module.exports = router;
