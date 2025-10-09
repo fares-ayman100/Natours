@@ -28,7 +28,6 @@ const updatedMe = catchAsync(async (req, res, next) => {
 
   // filter fields
   const filterdBody = filterdOBJ(req.body, 'name', 'email');
-
   //Update user document
   const updateUser = await User.findByIdAndUpdate(
     req.user.id,
@@ -62,18 +61,7 @@ const getUser = catchAsync(async (req, res, next) => {
   });
 });
 
-//*********
-
-const updateUser = async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  res.status(200).json({
-    status: httpStatus.SUCCESS,
-    message: user,
-  });
-};
+const updateUser = factory.updateDoc(User);
 
 const deleteUser = factory.delteteDoc(User);
 

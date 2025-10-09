@@ -14,6 +14,40 @@ const delteteDoc = (Model) =>
     });
   });
 
+const createDoc = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const newDoc = await Model.create(req.body);
+    res.status(201).json({
+      status: httpStatus.SUCCESS,
+      data: { data: newDoc },
+    });
+  });
+
+const updateDoc = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+    if (!doc) {
+      return next(new AppError('Tour Is Not Found', 404));
+    }
+    res.status(200).json({
+      status: httpStatus.SUCCESS,
+      data: {
+        data: doc,
+      },
+    });
+  });
+
+
+
 module.exports = {
   delteteDoc,
+  createDoc,
+  updateDoc,
 };

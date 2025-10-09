@@ -42,28 +42,11 @@ const getTour = catchAsync(async (req, res, next) => {
     .json({ status: httpStatus.SUCCESS, data: { tour } });
 });
 
-const createTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
-  res
-    .status(201)
-    .json({ status: httpStatus.SUCCESS, data: { tour: newTour } });
-});
+const createTour = factory.createDoc(Tour);
 
-const updateTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!tour) {
-    return next(new AppError('Tour Is Not Found', 404));
-  }
-  res
-    .status(200)
-    .json({ status: httpStatus.SUCCESS, data: { tour } });
-});
+const updateTour = factory.updateDoc(Tour);
 
 const deleteTour = factory.delteteDoc(Tour);
-
 
 const tourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
