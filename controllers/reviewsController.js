@@ -4,7 +4,10 @@ const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('../utils/httpStatus');
 
 const getAllReviews = catchAsync(async (req, res, next) => {
-  const reviews = await Review.find({}, { __v: false });
+  let filter = {};
+  if (req.params.tourID) filter = { tour: req.params.tourID };
+
+  const reviews = await Review.find(filter, { __v: false });
   res.status(200).json({
     status: httpStatus.SUCCESS,
     result: reviews.length,
