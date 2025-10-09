@@ -1,8 +1,6 @@
 const httpStatus = require('../utils/httpStatus');
-const APIFeatures = require('../utils/apiFeaturs');
 const Tour = require('../Models/toursModel');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
 
 const aliasTopTours = (req, res, next) => {
@@ -11,35 +9,11 @@ const aliasTopTours = (req, res, next) => {
   next();
 };
 
-const getAllTours = catchAsync(async (req, res, next) => {
-  const featuers = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .pagination();
+const getAllTours = factory.getAllDoc(Tour);
 
-  const tours = await featuers.query;
-  res.status(200).json({
-    status: httpStatus.SUCCESS,
-    restult: tours.length,
-    tours,
-  });
-});
-
-const getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id, {
-    __v: false,
-  }).populate({
-    path: 'reviews',
-    select: '-__v',
-  });
-  
-  if (!tour) {
-    return next(new AppError('Tour Is Not Found', 404));
-  }
-  res
-    .status(200)
-    .json({ status: httpStatus.SUCCESS, data: { tour } });
+const getTour = factory.getDoc(Tour, {
+  path: 'reviews',
+  select: '-__v',
 });
 
 const createTour = factory.createDoc(Tour);
@@ -72,7 +46,9 @@ const tourStats = catchAsync(async (req, res, next) => {
       },
     },
   ]);
-  res.status(200).json({ status: httpStatus.SUCCESS, data: stats });
+  res
+    .status(200)
+    .json({ status: httpStatus.SUCCESS, data: stats });
 });
 
 const monthlyPlan = catchAsync(async (req, res, next) => {
@@ -106,7 +82,9 @@ const monthlyPlan = catchAsync(async (req, res, next) => {
       },
     },
   ]);
-  res.status(200).json({ status: httpStatus.SUCCESS, data: month });
+  res
+    .status(200)
+    .json({ status: httpStatus.SUCCESS, data: month });
 });
 
 module.exports = {

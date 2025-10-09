@@ -1,5 +1,7 @@
 const httpStatus = require('../utils/httpStatus');
 const catchAsync = require('../utils/catchAsync');
+const APIFeatures = require('../utils/apiFeaturs');
+
 const delteteDoc = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndDelete(req.params.id);
@@ -34,7 +36,9 @@ const updateDoc = (Model) =>
       },
     );
     if (!doc) {
-      return next(new AppError('Tour Is Not Found', 404));
+      return next(
+        new AppError('No Document Found with that ID', 404),
+      );
     }
     res.status(200).json({
       status: httpStatus.SUCCESS,
@@ -44,10 +48,52 @@ const updateDoc = (Model) =>
     });
   });
 
+const getDoc = (Model, populate) =>
+  catchAsync(async (req, res, next) => {
+    let query = await Model.findById(req.params.id, {
+      __v: false,
+    });
 
+    if (populate) query = query.populate(populate);
+
+    const doc = await query;
+    if (!doc) {
+      return next(
+        new AppError('No Document Found with that ID', 404),
+      );
+    }
+    res.status(200).json({
+      status: httpStatus.SUCCESS,
+      data: { data: doc },
+    });
+  });
+
+const getAllDoc = (Model) =>
+  catchAsync(async (req, res, next) => {
+    let filter = {};
+    if (req.params.tourID) filter = { tour: req.params.tourID };
+
+    const featuers = new APIFeatures(
+      Model.find(filter),
+      req.query,
+    )
+      .filter()
+      .sort()
+      .limitFields()
+      .pagination();
+
+    const docs = await featuers.query;
+    res.status(200).json({
+      status: httpStatus.SUCCESS,
+      restult: docs.length,
+      docs,
+    });
+  });
 
 module.exports = {
   delteteDoc,
   createDoc,
   updateDoc,
+  getDoc,
+  getAllDoc,
 };

@@ -5,15 +5,13 @@ const AppError = require('../utils/appError');
 const filterdOBJ = require('../utils/filterObject');
 const factory = require('./handlerFactory');
 
+const getAllUsers = factory.getAllDoc(User);
 
-const getAllUsers = async (req, res) => {
-  const users = await User.find({}, { __v: false });
-  res.status(200).json({
-    status: httpStatus.SUCCESS,
-    result: users.length,
-    message: users,
-  });
-};
+const getUser = factory.getDoc(User);
+
+const updateUser = factory.updateDoc(User);
+
+const deleteUser = factory.delteteDoc(User);
 
 const updatedMe = catchAsync(async (req, res, next) => {
   // check if user pass password in the body
@@ -25,7 +23,6 @@ const updatedMe = catchAsync(async (req, res, next) => {
       ),
     );
   }
-
   // filter fields
   const filterdBody = filterdOBJ(req.body, 'name', 'email');
   //Update user document
@@ -49,21 +46,6 @@ const deleteMe = catchAsync(async (req, res, next) => {
   });
   res.status(204).json({ status: httpStatus.SUCCESS });
 });
-
-const getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    return new AppError('User is not found', 404);
-  }
-  res.status(200).json({
-    status: httpStatus.SUCCESS,
-    message: user,
-  });
-});
-
-const updateUser = factory.updateDoc(User);
-
-const deleteUser = factory.delteteDoc(User);
 
 module.exports = {
   getAllUsers,
