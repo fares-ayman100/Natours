@@ -3,6 +3,8 @@ const User = require('../Models/usersModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const filterdOBJ = require('../utils/filterObject');
+const factory = require('./handlerFactory');
+
 
 const getAllUsers = async (req, res) => {
   const users = await User.find({}, { __v: false });
@@ -73,13 +75,7 @@ const updateUser = async (req, res) => {
   });
 };
 
-const deleteUser = async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
-  res.status(200).json({
-    status: httpStatus.SUCCESS,
-    message: null,
-  });
-};
+const deleteUser = factory.delteteDoc(User);
 
 module.exports = {
   getAllUsers,
