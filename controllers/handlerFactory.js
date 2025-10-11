@@ -1,6 +1,7 @@
 const httpStatus = require('../utils/httpStatus');
 const catchAsync = require('../utils/catchAsync');
 const APIFeatures = require('../utils/apiFeaturs');
+const AppError = require('../utils/appError');
 
 const delteteDoc = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -70,25 +71,20 @@ const getDoc = (Model, populate) =>
 
 const getAllDoc = (Model) =>
   catchAsync(async (req, res, next) => {
-    console.log('➡️ دخل getAllDoc');
     let filter = {};
     if (req.params.tourID) filter = { tour: req.params.tourID };
-    console.log('🟢 filter:', filter);
-
-    const featuers = new APIFeatures(Model.find(filter), req.query)
+    const featuers = new APIFeatures(
+      Model.find(filter),
+      req.query,
+    )
       .filter()
       .sort()
       .limitFields()
       .pagination();
-
-    console.log('🟢 Query Built:', featuers.query);
-
     const docs = await featuers.query;
-    console.log('🟢 Docs found:', docs.length);
-
     res.status(200).json({
       status: httpStatus.SUCCESS,
-      result: docs.length,
+      restult: docs.length,
       docs,
     });
   });
