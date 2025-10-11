@@ -15,11 +15,15 @@ router.route('/tours-stats').get(tourController.tourStats);
 
 router
   .route('/monthly-plan/:year')
-  .get(tourController.monthlyPlan);
+  .get(
+    protect,
+    allawedTo('admin', 'lead-guide'),
+    tourController.monthlyPlan,
+  );
 
 router
   .route('/')
-  .get(protect, tourController.getAllTours)
+  .get(tourController.getAllTours)
   .post(
     protect,
     allawedTo('admin', 'lead-guide'),

@@ -5,11 +5,13 @@ const allawedTo = require('../Middleware/allawedTo');
 const getTourUserIds = require('../Middleware/getTourUserIds');
 const router = express.Router({ mergeParams: true });
 
+// Middleware
+router.use(protect);
+
 router
   .route('/')
   .get(reviewsController.getAllReviews)
   .post(
-    protect,
     allawedTo('user'),
     getTourUserIds,
     reviewsController.createReview,
@@ -18,7 +20,13 @@ router
 router
   .route('/:id')
   .get(reviewsController.getReview)
-  .delete(reviewsController.deleteReview)
-  .patch(reviewsController.updateReview); 
+  .delete(
+    allawedTo('user', 'admin'),
+    reviewsController.deleteReview,
+  )
+  .patch(
+    allawedTo('user', 'admin'),
+    reviewsController.updateReview,
+  ); 
 
 module.exports = router;

@@ -6,46 +6,38 @@ const allawedTo = require('../Middleware/allawedTo');
 
 const router = express.Router();
 router.route('/signup').post(authController.signup);
-
 router.route('/signin').post(authController.signin);
 
 router
   .route('/forgetPassword')
   .post(authController.forgetPassword);
-
-router
-  .route('/updateMe')
-  .patch(protect, userController.updatedMe);
-
-router
-  .route('/deleteMe')
-  .delete(protect, userController.deleteMe);
-
-router
-  .route('/getMe')
-  .get(protect, userController.getMe, userController.getUser);
-
 router
   .route('/resetPassword/:token')
   .patch(authController.resetPassword);
 
+// Middleware
+router.use(protect);
+
+router
+  .route('/getMe')
+  .get(userController.getMe, userController.getUser);
+
+router.route('/updateMe').patch(userController.updatedMe);
+
+router.route('/deleteMe').delete(userController.deleteMe);
+
 router
   .route('/updatePassword')
-  .patch(protect, authController.updatedPassword);
+  .patch(authController.updatedPassword);
 
-router.route('/').get(protect, userController.getAllUsers);
+// Middleware
+router.use(allawedTo('admin'));
+
+router.route('/').get(userController.getAllUsers);
 
 router
   .route('/:id')
   .get(userController.getUser)
-  .patch(
-    protect,
-    allawedTo('admin', 'lead-guide'),
-    userController.updateUser,
-  )
-  .delete(
-    protect,
-    allawedTo('admin', 'lead-guide'),
-    userController.deleteUser,
-  );
+  .patch(userController.updateUser)
+  .delete(userController.deleteUser);
 module.exports = router;
