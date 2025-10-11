@@ -70,25 +70,29 @@ const getDoc = (Model, populate) =>
 
 const getAllDoc = (Model) =>
   catchAsync(async (req, res, next) => {
+    console.log('➡️ دخل getAllDoc');
     let filter = {};
     if (req.params.tourID) filter = { tour: req.params.tourID };
+    console.log('🟢 filter:', filter);
 
-    const featuers = new APIFeatures(
-      Model.find(filter),
-      req.query,
-    )
+    const featuers = new APIFeatures(Model.find(filter), req.query)
       .filter()
       .sort()
       .limitFields()
       .pagination();
 
+    console.log('🟢 Query Built:', featuers.query);
+
     const docs = await featuers.query;
+    console.log('🟢 Docs found:', docs.length);
+
     res.status(200).json({
       status: httpStatus.SUCCESS,
-      restult: docs.length,
+      result: docs.length,
       docs,
     });
   });
+
 
 module.exports = {
   delteteDoc,
