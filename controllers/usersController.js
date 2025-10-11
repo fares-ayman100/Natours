@@ -13,6 +13,11 @@ const updateUser = factory.updateDoc(User);
 
 const deleteUser = factory.delteteDoc(User);
 
+const getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 const updatedMe = catchAsync(async (req, res, next) => {
   // check if user pass password in the body
   if (req.body.password || req.body.passwordConfirm) {
@@ -54,4 +59,5 @@ module.exports = {
   deleteUser,
   updatedMe,
   deleteMe,
+  getMe,
 };

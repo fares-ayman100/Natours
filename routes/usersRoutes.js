@@ -1,41 +1,51 @@
 const express = require('express');
-const controller = require('../controllers/usersController');
-const authcontroller = require('../controllers/authController');
+const userController = require('../controllers/usersController');
+const authController = require('../controllers/authController');
 const protect = require('../Middleware/protect');
 const allawedTo = require('../Middleware/allawedTo');
 
 const router = express.Router();
-router.route('/signup').post(authcontroller.signup);
+router.route('/signup').post(authController.signup);
 
-router.route('/signin').post(authcontroller.signin);
+router.route('/signin').post(authController.signin);
 
-router.route('/forgetPassword').post(authcontroller.forgetPassword);
+router
+  .route('/forgetPassword')
+  .post(authController.forgetPassword);
 
-router.route('/updateMe').patch(protect, controller.updatedMe);
+router
+  .route('/updateMe')
+  .patch(protect, userController.updatedMe);
 
-router.route('/deleteMe').delete(protect, controller.deleteMe);
+router
+  .route('/deleteMe')
+  .delete(protect, userController.deleteMe);
+
+router
+  .route('/getMe')
+  .get(protect, userController.getMe, userController.getUser);
 
 router
   .route('/resetPassword/:token')
-  .patch(authcontroller.resetPassword);
+  .patch(authController.resetPassword);
 
 router
   .route('/updatePassword')
-  .patch(protect, authcontroller.updatedPassword);
+  .patch(protect, authController.updatedPassword);
 
-router.route('/').get(protect, controller.getAllUsers);
+router.route('/').get(protect, userController.getAllUsers);
 
 router
   .route('/:id')
-  .get(controller.getUser)
+  .get(userController.getUser)
   .patch(
     protect,
     allawedTo('admin', 'lead-guide'),
-    controller.updateUser,
+    userController.updateUser,
   )
   .delete(
     protect,
     allawedTo('admin', 'lead-guide'),
-    controller.deleteUser,
+    userController.deleteUser,
   );
 module.exports = router;
