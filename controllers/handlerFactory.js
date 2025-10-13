@@ -22,7 +22,7 @@ const createDoc = (Model) =>
     const newDoc = await Model.create(req.body);
     res.status(201).json({
       status: httpStatus.SUCCESS,
-      data: { data: newDoc },
+      data: newDoc,
     });
   });
 
@@ -43,9 +43,7 @@ const updateDoc = (Model) =>
     }
     res.status(200).json({
       status: httpStatus.SUCCESS,
-      data: {
-        data: doc,
-      },
+      data: doc,
     });
   });
 
@@ -65,7 +63,7 @@ const getDoc = (Model, populate) =>
     }
     res.status(200).json({
       status: httpStatus.SUCCESS,
-      data: { data: doc },
+      data: doc,
     });
   });
 
@@ -81,6 +79,7 @@ const getAllDoc = (Model) =>
       .sort()
       .limitFields()
       .pagination();
+    //const docs = await featuers.query.explain();
     const docs = await featuers.query;
     res.status(200).json({
       status: httpStatus.SUCCESS,

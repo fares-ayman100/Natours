@@ -127,6 +127,7 @@ const tourSchema = new mongoose.Schema(
   },
 );
 
+
 // Virtual does not store in the database but calculated when we need
 tourSchema.virtual('durationsWeeks').get(function () {
   return this.duration / 7;
@@ -138,6 +139,10 @@ tourSchema.virtual('reviews', {
   foreignField: 'tour',
   localField: '_id',
 });
+
+tourSchema.index({ price: 1, ratingsAverage: 1 });
+tourSchema.index({ slug: 1 });
+
 
 // Document Middleware: runs before .save() and .create()
 
