@@ -45,7 +45,7 @@ const tourSchema = new mongoose.Schema(
       min: [1, 'Rating must be above 1.0'],
       max: [5, 'Rating must be below 5.0'],
       set: (val) => {
-        Math.round(val * 10) / 10;
+        Math.round(val * 10) / 10; //4.666666,46.6666,47,4.7
       },
     },
     ratingsQuantity: {
@@ -129,6 +129,7 @@ const tourSchema = new mongoose.Schema(
     id: false,
   },
 );
+tourSchema.index({ startLocation: '2dsphere' });
 
 
 // Virtual does not store in the database but calculated when we need
