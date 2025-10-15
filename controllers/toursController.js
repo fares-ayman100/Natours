@@ -114,6 +114,43 @@ const toursWithIn = catchAsync(async (req, res, next) => {
     data: tours,
   });
 });
+
+const getDistances = catchAsync(async (req, res, next) => {
+  const { latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+  const mulitlier = unit === 'mi' ? 0.000621371192 : 0.001;
+
+  if (!lat || !lng) {
+    next(
+      new AppError(
+        'Please provide latitude and lngitude in this format lat,lng',
+        400,
+      ),
+    );
+  }
+  const distances = await Tour.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [lng * 1, lat * 1],
+        },
+        distanceField: 'distance',
+        distanceMultiplier: mulitlier,
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+  res.status(200).json({
+    status: httpStatus.SUCCESS,
+    data: distances,
+  });
+});
 module.exports = {
   getAllTours,
   getTour,
@@ -124,4 +161,5 @@ module.exports = {
   tourStats,
   monthlyPlan,
   toursWithIn,
+  getDistances,
 };

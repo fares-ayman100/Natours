@@ -12,11 +12,15 @@ router
   .get(tourController.aliasTopTours, tourController.getAllTours);
 
 router.route('/tours-stats').get(tourController.tourStats);
+
 //tour-within/400/center/34.090581,-118.222156/unit/km
 router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get(tourController.toursWithIn);
 
+router
+  .route('/distances/:latlng/unit/:unit')
+  .get(tourController.getDistances);
 router
   .route('/monthly-plan/:year')
   .get(
