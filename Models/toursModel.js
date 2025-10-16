@@ -98,7 +98,13 @@ const tourSchema = new mongoose.Schema(
         default: 'Point',
         enum: ['Point'],
       },
-      coordinates: [Number],
+      coordinates: {
+        type: [Number],
+        required: [
+          true,
+          'Start location coordinates are required',
+        ],
+      },
       address: String,
       description: String,
     },
