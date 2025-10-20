@@ -21,7 +21,6 @@ const tourSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      select: false,
     },
     duration: {
       type: Number,
