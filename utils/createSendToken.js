@@ -8,16 +8,17 @@ module.exports = (user, statusCode, res, extra = {}) => {
         process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true,
+    secure: true,
+    sameSite: 'none',
   };
-  
+
   res.cookie('jwt', token, cookiOptions);
-  if (process.env.NODE_ENV == 'production') {
-    cookiOptions.secure = true;
-  }
+
   user.password = undefined;
   res.status(statusCode).json({
     status: httpStatus.SUCCESS,
     token,
     ...extra,
   });
+
 };

@@ -8,6 +8,7 @@ const usersRoutes = require('./routes/usersRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
 const errorController = require('./controllers/errorController');
 const AppError = require('./utils/appError');
+const cookieParser = require('cookie-parser');
 const htmlSanitize = require('./Middleware/htmlSanitize');
 const mongoSanitize = require('./Middleware/querySanitize');
 const viewsRouters = require('./routes/viewsRouters');
@@ -26,6 +27,12 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       'img-src': ["'self'", '*.openstreetmap.org'],
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        'https://cdn.jsdelivr.net',
+        'https://cdnjs.cloudflare.com',
+      ],
     },
   }),
 );
@@ -45,6 +52,7 @@ app.use('/api', limiter);
 
 // Body parser reading the data form req.body
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize);

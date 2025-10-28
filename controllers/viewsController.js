@@ -1,5 +1,5 @@
 const Tour = require('../Models/toursModel');
-const User = require('../Models/usersModel');
+
 const catchAsync = require('../utils/catchAsync');
 const getOverView = catchAsync(async (req, res, next) => {
   // 1) Get The Tours Data from collection
@@ -28,7 +28,7 @@ const getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-const login = (req, res) => {
+const getLoginUser = (req, res) => {
   res.status(200).render('login', {
     title: 'Log into your account',
   });
@@ -37,5 +37,5 @@ const login = (req, res) => {
 module.exports = {
   getOverView,
   getTour,
-  login,
+  getLoginUser,
 };

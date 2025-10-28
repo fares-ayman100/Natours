@@ -7,6 +7,8 @@ const allawedTo = require('../Middleware/allawedTo');
 const router = express.Router();
 router.route('/signup').post(authController.signup);
 router.route('/signin').post(authController.signin);
+router.route('/logout').get(authController.logOut);
+
 
 router
   .route('/forgetPassword')

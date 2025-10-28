@@ -26,7 +26,9 @@ const signup = catchAsync(async (req, res, next) => {
 const signin = catchAsync(async (req, res, next) => {
   const { email, password } = req.body || {};
   if (!email || !password) {
-    return next(new AppError('Email and Pasword Is Required', 400));
+    return next(
+      new AppError('Email and Pasword Is Required', 400),
+    );
   }
 
   const user = await User.findOne({ email }).select('+password');
@@ -34,13 +36,23 @@ const signin = catchAsync(async (req, res, next) => {
     !user ||
     !(await user.correctPassword(password, user.password))
   ) {
-    return next(new AppError('Incorrect email or password', 401));
+    return next(
+      new AppError('Incorrect email or password', 401),
+    );
   }
 
   createSendToken(user, 200, res, {
     message: 'Logged in successfuly',
   });
 });
+
+const logOut = (req, res) => {
+  res.cookie('jwt', 'loogedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: httpStatus.SUCCESS });
+};
 
 const forgetPassword = catchAsync(async (req, res, next) => {
   // get user by post email
@@ -115,9 +127,16 @@ const resetPassword = catchAsync(async (req, res, next) => {
 
   // set the new changePasswordAt
   // log the user in and send jwt
-  if (!req.body || !req.body.password || !req.body.passwordConfirm) {
+  if (
+    !req.body ||
+    !req.body.password ||
+    !req.body.passwordConfirm
+  ) {
     return next(
-      new AppError('Password and confirm password are required', 400),
+      new AppError(
+        'Password and confirm password are required',
+        400,
+      ),
     );
   }
   createSendToken(user, 200, res);
@@ -138,7 +157,9 @@ const updatedPassword = catchAsync(async (req, res, next) => {
   }
 
   // 2) get user with password
-  const user = await User.findById(req.user.id).select('+password');
+  const user = await User.findById(req.user.id).select(
+    '+password',
+  );
 
   // 3) check current password
   const isPasswordCorrect = await user.correctPassword(
@@ -167,7 +188,9 @@ const updatedPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 6) issue new token
-  createSendToken(user, 200, res, { message: 'Password is Updated' });
+  createSendToken(user, 200, res, {
+    message: 'Password is Updated',
+  });
 });
 
 module.exports = {
@@ -176,5 +199,5 @@ module.exports = {
   forgetPassword,
   resetPassword,
   updatedPassword,
-  
+  logOut,
 };
