@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const User = require('../Models/usersModel');
-const catchAsync = require('../utils/catchAsync');
 module.exports = async (req, res, next) => {
   try {
     if (req.cookies.jwt) {

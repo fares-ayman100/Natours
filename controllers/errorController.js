@@ -28,30 +28,57 @@ const handelTokenExpired = () => {
   );
 };
 
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack,
+const sendErrorDev = (err, req, res) => {
+  // A) API
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack,
+    });
+  }
+  // B) Renders
+  res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: err.message,
   });
 };
 
-const sendErrorProd = (err, res) => {
+const sendErrorProd = (err, req, res) => {
+  // A) API
   //Operational Error
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
+  if (req.originalUrl.startsWith('/api')) {
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
+
+    //Programming Error
+    console.log('Error 💥', err);
+    return res.status(500).json({
+      status: 'faild',
+      message: 'some thing is wrong',
     });
   }
-  //Programming Error
-  else {
-    console.log(err);
-    res
-      .status(500)
-      .json({ status: 'faild', message: 'some thing is wrong' });
+  // B) Renders
+  // Operational Error
+  if (err.isOperational) {
+    console.log('Error 💥', err);
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      msg: err.message,
+    });
   }
+  // Programming Error
+  console.log('Error 💥', err);
+
+      return res.status(err.statusCode).render('error', {
+        title: 'Something went wrong!',
+        msg: 'Please try again later.',
+      });
 };
 
 module.exports = (err, req, res, next) => {
@@ -59,7 +86,7 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || httpStatus.ERROR;
 
   if (process.env.NODE_ENV == 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV == 'production') {
     let error = err;
     if (error.name == 'CastError') {
@@ -77,6 +104,6 @@ module.exports = (err, req, res, next) => {
     if (error.name == 'TokenExpiredError') {
       error = handelTokenExpired();
     }
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
 };

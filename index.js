@@ -52,6 +52,9 @@ app.use('/api', limiter);
 
 // Body parser reading the data form req.body
 app.use(express.json({ limit: '10kb' }));
+// To read data come from HTML (Form Data)
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
 app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
@@ -75,7 +78,7 @@ app.use('/api/v1/reviews', reviewsRoutes);
 app.use((req, res, next) => {
   next(
     new AppError(
-      `Can't find ${req.originalUrl} on this server!`,
+      `We can’t find ${req.originalUrl} on this server!`,
       404,
     ),
   );
