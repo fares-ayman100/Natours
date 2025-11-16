@@ -3,12 +3,11 @@ const userController = require('../controllers/usersController');
 const authController = require('../controllers/authController');
 const protect = require('../Middleware/protect');
 const allawedTo = require('../Middleware/allawedTo');
-
+const multer = require('../Middleware/multer');
 const router = express.Router();
 router.route('/signup').post(authController.signup);
 router.route('/signin').post(authController.signin);
 router.route('/logout').get(authController.logOut);
-
 
 router
   .route('/forgetPassword')
@@ -24,7 +23,9 @@ router
   .route('/getMe')
   .get(userController.getMe, userController.getUser);
 
-router.route('/updateMe').patch(userController.updatedMe);
+router
+  .route('/updateMe')
+  .patch(multer.single('photo'), userController.updatedMe);
 
 router.route('/deleteMe').delete(userController.deleteMe);
 

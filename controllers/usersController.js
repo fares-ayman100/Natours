@@ -18,6 +18,7 @@ const getMe = (req, res, next) => {
   next();
 };
 
+
 const updatedMe = catchAsync(async (req, res, next) => {
   // check if user pass password in the body
   if (req.body.password || req.body.passwordConfirm) {
@@ -30,6 +31,7 @@ const updatedMe = catchAsync(async (req, res, next) => {
   }
   // filter fields
   const filterdBody = filterdOBJ(req.body, 'name', 'email');
+  if (req.file) filterdBody.photo = req.file.filename;
   //Update user document
   const updateUser = await User.findByIdAndUpdate(
     req.user.id,
