@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 const protect = require('../Middleware/protect');
 const allawedTo = require('../Middleware/allawedTo');
 const multer = require('../Middleware/multer');
+const resizeImage = require('../Middleware/resizeImage');
 const router = express.Router();
 router.route('/signup').post(authController.signup);
 router.route('/signin').post(authController.signin);
@@ -25,7 +26,11 @@ router
 
 router
   .route('/updateMe')
-  .patch(multer.single('photo'), userController.updatedMe);
+  .patch(
+    multer.single('photo'),
+    resizeImage,
+    userController.updatedMe,
+  );
 
 router.route('/deleteMe').delete(userController.deleteMe);
 
