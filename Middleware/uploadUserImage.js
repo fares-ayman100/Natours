@@ -11,7 +11,7 @@ const AppError = require('../utils/appError');
 //     cb(null, `user-${req.user.id}-${Date.now()}-.${ext}`);
 //   },
 // });
-const multerStorage=multer.memoryStorage();
+const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
@@ -26,3 +26,4 @@ module.exports = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
 });
+//module.exports = upload;

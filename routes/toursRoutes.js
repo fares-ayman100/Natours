@@ -3,6 +3,9 @@ const tourController = require('../controllers/toursController');
 const reviewRouter = require('../routes/reviewsRoutes');
 const protect = require('../Middleware/protect');
 const allawedTo = require('../Middleware/allawedTo');
+const uploadTourImage = require('../Middleware/uploadTourImage');
+const resizeTourImage = require('../Middleware/resizeTourImage');
+
 const router = express.Router();
 
 router.use('/:tourID/reviews', reviewRouter);
@@ -44,6 +47,8 @@ router
   .patch(
     protect,
     allawedTo('admin', 'lead-guide'),
+    uploadTourImage,
+    resizeTourImage,
     tourController.updateTour,
   )
   .delete(

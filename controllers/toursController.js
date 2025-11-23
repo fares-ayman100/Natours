@@ -3,6 +3,7 @@ const Tour = require('../Models/toursModel');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 const AppError = require('../utils/appError');
+
 const aliasTopTours = (req, res, next) => {
   req.url =
     '/?sort=-ratingsAverage,price&fields=ratingsAverage,price,name,ratingAverage,difficulty,summary&limit=5';
