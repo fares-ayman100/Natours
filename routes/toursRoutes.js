@@ -3,7 +3,7 @@ const tourController = require('../controllers/toursController');
 const reviewRouter = require('../routes/reviewsRoutes');
 const protect = require('../Middleware/protect');
 const allawedTo = require('../Middleware/allawedTo');
-const uploadTourImage = require('../Middleware/uploadTourImage');
+const uploadImage = require('../Middleware/uploadImage');
 const resizeTourImage = require('../Middleware/resizeTourImage');
 
 const router = express.Router();
@@ -47,7 +47,16 @@ router
   .patch(
     protect,
     allawedTo('admin', 'lead-guide'),
-    uploadTourImage,
+    uploadImage.fields([
+      {
+        name: 'imageCover',
+        maxCount: 1,
+      },
+      {
+        name: 'images',
+        maxCount: 3,
+      },
+    ]),
     resizeTourImage,
     tourController.updateTour,
   )

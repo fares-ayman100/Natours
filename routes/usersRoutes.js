@@ -3,8 +3,8 @@ const userController = require('../controllers/usersController');
 const authController = require('../controllers/authController');
 const protect = require('../Middleware/protect');
 const allawedTo = require('../Middleware/allawedTo');
+const uploadImage = require('../Middleware/uploadImage');
 const resizeUserImage = require('../Middleware/resizeUserImage');
-const uploadUserImage = require('../Middleware/uploadUserImage');
 const router = express.Router();
 router.route('/signup').post(authController.signup);
 router.route('/signin').post(authController.signin);
@@ -27,7 +27,7 @@ router
 router
   .route('/updateMe')
   .patch(
-    uploadUserImage.single('photo'),
+    uploadImage.single('photo'),
     resizeUserImage,
     userController.updatedMe,
   );
