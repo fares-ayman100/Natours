@@ -20,7 +20,7 @@ module.exports = catchAsync(async (req, res, next) => {
         .resize(2000, 1333)
         .toFormat('jpeg')
         .jpeg({ quality: 90 })
-        .toFile(`public/img/tours/${filename}`);
+        .toFile(`${__dirname}/../public/img/tours/${filename}`);
       req.body.images.push(filename);
     }),
   );
