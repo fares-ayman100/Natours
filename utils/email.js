@@ -1,6 +1,9 @@
 const nodemailer = require('nodemailer');
 const pug = require('pug');
+const { Resend } = require('resend');
 const htmlToText = require('html-to-text');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 module.exports = class Email {
   constructor(user, url) {
@@ -10,20 +13,8 @@ module.exports = class Email {
     this.from = `Fares Ayman <${process.env.EMAIL_FROM}>`;
   }
 
-  // Transporter
+  // Transporter (dev only)
   newTransport() {
-    if (process.env.NODE_ENV === 'production') {
-      // send GridMail
-      return nodemailer.createTransport({
-        host: process.env.RESEND_HOST,
-        port: process.env.RESEND_PORT, // استخدام 587 هو الشائع
-        secure: false, // لـ 587
-        auth: {
-          user: process.env.RESEND_USER || 'resend',
-          pass: process.env.RESEND_PASS,
-        },
-      });
-    }
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
@@ -33,6 +24,7 @@ module.exports = class Email {
       },
     });
   }
+
   async send(template, subject) {
     // 1) Render Html
     const html = pug.renderFile(
@@ -44,7 +36,6 @@ module.exports = class Email {
       },
     );
 
-    // 2) MailOption
     const mailOptions = {
       from: this.from,
       to: this.to,
@@ -53,7 +44,12 @@ module.exports = class Email {
       text: htmlToText.convert(html),
     };
 
-    // 3) Create transport and send Email
+    // 2) If production → use Resend API
+    if (process.env.NODE_ENV === 'production') {
+      return await resend.emails.send(mailOptions);
+    }
+
+    // 3) If dev → use Nodemailer
     await this.newTransport().sendMail(mailOptions);
   }
 
@@ -62,9 +58,6 @@ module.exports = class Email {
   }
 
   async sendResetPassword() {
-    await this.send(
-      'resetPassword',
-      'Your password reset token (valid for 10 min)',
-    );
+    await this.send('resetPassword', 'Reset your password');
   }
 };
