@@ -13,12 +13,11 @@ block content
       nav.user-view__menu
         ul.side-nav
           +navItem('#', 'Settings', 'settings', true)
-          +navItem('#', 'My bookings', 'briefcase', true)
-          +navItem('#', 'My reviews', 'star', true)
-          +navItem('#', 'Billing', 'credit-card', true)
+          +navItem('/my-bookings', 'My bookings', 'briefcase')
+          +navItem('#', 'My reviews', 'star')
+          +navItem('#', 'Billing', 'credit-card')
 
-        // 👇 هنا الجزء اللي كان غلط مكانه
-        if user.role == 'admin'
+        - if (user.role == 'admin')
           .admin-nav
             h5.admin-nav__heading Admin
             ul.side-nav
