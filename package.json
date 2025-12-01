@@ -35,6 +35,7 @@
     "sanitize-html": "^2.17.0",
     "sharp": "^0.34.5",
     "slugify": "^1.6.6",
+    "stripe": "^7.63.1",
     "validator": "^13.15.15"
   },
   "devDependencies": {

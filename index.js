@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const tourRoutes = require('./routes/toursRoutes');
 const usersRoutes = require('./routes/usersRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
+const bookingRouutes = require('./routes/bookingRoutes');
 const errorController = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const cookieParser = require('cookie-parser');
@@ -26,12 +27,31 @@ app.use(helmet());
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      'img-src': ["'self'", '*.openstreetmap.org'],
       defaultSrc: ["'self'"],
       scriptSrc: [
         "'self'",
         'https://cdn.jsdelivr.net',
         'https://cdnjs.cloudflare.com',
+        'https://js.stripe.com',
+      ],
+      connectSrc: [
+        "'self'",
+        'https://api.stripe.com',
+        'http://localhost:3000',
+        'ws://localhost:*/',
+      ],
+      frameSrc: ["'self'", 'https://js.stripe.com'],
+      imgSrc: [
+        "'self'",
+        'data:',
+        '*.stripe.com',
+        '*.stripe.network',
+      ],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      styleSrc: [
+        "'self'",
+        'https://fonts.googleapis.com',
+        "'unsafe-inline'",
       ],
     },
   }),
@@ -75,6 +95,7 @@ app.use('/', viewsRouters);
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', usersRoutes);
 app.use('/api/v1/reviews', reviewsRoutes);
+app.use('/api/v1/bookings', bookingRouutes);
 app.use((req, res, next) => {
   next(
     new AppError(

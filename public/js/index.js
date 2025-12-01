@@ -3,6 +3,7 @@ import { displayMap } from './map';
 import { login } from './login';
 import { logout } from './logout';
 import { updateSetting } from './updateSetting';
+import { bookTour } from './stripe';
 
 // DOM Element
 const map = document.getElementById('map');
@@ -12,6 +13,7 @@ const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector(
   '.form-user-settings',
 );
+const bookBtn = document.getElementById('book-tour');
 
 // Deligate
 if (map) {
@@ -29,8 +31,8 @@ if (loginForm) {
 if (logoutBtn) {
   logoutBtn.addEventListener('click', logout);
 }
-if(userDataForm){
-  userDataForm.addEventListener('submit',(e)=>{
+if (userDataForm) {
+  userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const form = new FormData();
     form.append('name', document.getElementById('name').value);
@@ -42,20 +44,37 @@ if(userDataForm){
     console.log(form);
 
     updateSetting(form, 'data');
-  })
+  });
 
-  if(userPasswordForm){
-    userPasswordForm.addEventListener('submit',async(e)=>{
-    e.preventDefault();
-    document.querySelector('.btn--save-password').textContent='Updating...'
-    const currentPassword = document.getElementById('password-current').value;
-    const newPassword = document.getElementById('password').value;
-    const passwordConfirm = document.getElementById('password-confirm').value;
-    await updateSetting({currentPassword,newPassword,passwordConfirm},'Password');
-      document.querySelector('.btn--save-password').textContent="Save Password"
-      document.getElementById('password-current').value='';
-      document.getElementById('password').value='';
-      document.getElementById('password-confirm').value='';
-  })
+  if (userPasswordForm) {
+    userPasswordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      document.querySelector('.btn--save-password').textContent =
+        'Updating...';
+      const currentPassword = document.getElementById(
+        'password-current',
+      ).value;
+      const newPassword =
+        document.getElementById('password').value;
+      const passwordConfirm = document.getElementById(
+        'password-confirm',
+      ).value;
+      await updateSetting(
+        { currentPassword, newPassword, passwordConfirm },
+        'Password',
+      );
+      document.querySelector('.btn--save-password').textContent =
+        'Save Password';
+      document.getElementById('password-current').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('password-confirm').value = '';
+    });
   }
-};
+}
+if (bookBtn) {
+  bookBtn.addEventListener('click', async (e) => {
+    e.target.textContent = 'Processing...';
+    const { tourId } = e.target.dataset;
+    await bookTour(tourId);
+  });
+}
