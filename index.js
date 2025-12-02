@@ -13,6 +13,7 @@ const cookieParser = require('cookie-parser');
 const htmlSanitize = require('./Middleware/htmlSanitize');
 const mongoSanitize = require('./Middleware/querySanitize');
 const viewsRouters = require('./routes/viewsRouters');
+const compression = require('compression');
 const app = express();
 
 app.set('view engine', 'pug');
@@ -82,6 +83,8 @@ app.use(mongoSanitize);
 
 // Data sanitization against XSS
 app.use(htmlSanitize);
+
+app.use(compression());
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();

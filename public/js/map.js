@@ -20,7 +20,7 @@ export const displayMap = (locations) => {
 
     const marker = L.marker(coords, {
       icon: L.divIcon({
-        className: 'marker', // نفس اللي جوناس استخدمه
+        className: 'marker',
         iconSize: [32, 40],
         iconAnchor: [16, 40],
       }),
@@ -29,7 +29,7 @@ export const displayMap = (locations) => {
       .bindPopup(`<p>Day ${loc.day}: ${loc.description}</p>`, {
         autoClose: false,
         closeOnClick: false,
-        offset: [0, -30], // ✅ يحرك الـ popup لفوق
+        offset: [0, -30],
       });
 
     markers.push(marker);

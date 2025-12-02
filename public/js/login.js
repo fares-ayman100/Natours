@@ -2,11 +2,11 @@ import axios from 'axios';
 import { showAlert } from './alerts';
 
 export const login = async (email, password) => {
-  console.log(email, password);
+  //console.log(email, password);
   try {
     await axios({
       method: 'POST',
-      url: 'http://localhost:3000/api/v1/users/signin',
+      url: '/api/v1/users/signin',
       data: {
         email,
         password,

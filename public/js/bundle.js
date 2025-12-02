@@ -6652,14 +6652,13 @@ var displayMap = exports.displayMap = function displayMap(locations) {
     var marker = L.marker(coords, {
       icon: L.divIcon({
         className: 'marker',
-        // نفس اللي جوناس استخدمه
         iconSize: [32, 40],
         iconAnchor: [16, 40]
       })
     }).addTo(map).bindPopup("<p>Day ".concat(loc.day, ": ").concat(loc.description, "</p>"), {
       autoClose: false,
       closeOnClick: false,
-      offset: [0, -30] // ✅ يحرك الـ popup لفوق
+      offset: [0, -30]
     });
     markers.push(marker);
   });
@@ -12843,32 +12842,31 @@ var login = exports.login = /*#__PURE__*/function () {
     return _regenerator().w(function (_context) {
       while (1) switch (_context.p = _context.n) {
         case 0:
-          console.log(email, password);
-          _context.p = 1;
-          _context.n = 2;
+          _context.p = 0;
+          _context.n = 1;
           return (0, _axios.default)({
             method: 'POST',
-            url: 'http://localhost:3000/api/v1/users/signin',
+            url: '/api/v1/users/signin',
             data: {
               email: email,
               password: password
             }
           });
-        case 2:
+        case 1:
           (0, _alerts.showAlert)('success', 'Logged in successfully!');
           window.setTimeout(function () {
             location.assign('/');
           }, 1000);
-          _context.n = 4;
+          _context.n = 3;
           break;
-        case 3:
-          _context.p = 3;
+        case 2:
+          _context.p = 2;
           _t = _context.v;
           (0, _alerts.showAlert)('error', (_error$response = _t.response) === null || _error$response === void 0 || (_error$response = _error$response.data) === null || _error$response === void 0 ? void 0 : _error$response.message);
-        case 4:
+        case 3:
           return _context.a(2);
       }
-    }, _callee, null, [[1, 3]]);
+    }, _callee, null, [[0, 2]]);
   }));
   return function login(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -12898,7 +12896,7 @@ var logout = exports.logout = /*#__PURE__*/function () {
           _context.n = 1;
           return (0, _axios.default)({
             method: 'GET',
-            url: 'http://localhost:3000/api/v1/users/logout'
+            url: '/api/v1/users/logout'
           });
         case 1:
           res = _context.v;
@@ -12911,6 +12909,7 @@ var logout = exports.logout = /*#__PURE__*/function () {
         case 2:
           _context.p = 2;
           _t = _context.v;
+          console.log(_t.response);
           (0, _alerts.showAlert)('error', 'Error Logging out ! Try again.');
         case 3:
           return _context.a(2);
@@ -12942,7 +12941,7 @@ var updateSetting = exports.updateSetting = /*#__PURE__*/function () {
       while (1) switch (_context.p = _context.n) {
         case 0:
           _context.p = 0;
-          url = type === 'Password' ? 'http://localhost:3000/api/v1/users/updatePassword' : 'http://localhost:3000/api/v1/users/updateMe';
+          url = type === 'Password' ? '/api/v1/users/updatePassword' : '/api/v1/users/updateMe';
           _context.n = 1;
           return (0, _axios.default)({
             method: 'PATCH',
@@ -12992,11 +12991,9 @@ var bookTour = exports.bookTour = /*#__PURE__*/function () {
           stripe = Stripe('pk_test_51SXrS9D3ltocuR6k19oyQTheYbfebV5bsHQmRhOqieVyFKtF4APoY88cj0frVcIUZsNZbaXg6M0K8QtvyWBoMakV006Lnr60St');
           _context.p = 1;
           _context.n = 2;
-          return (0, _axios.default)("http://localhost:3000/api/v1/bookings/checkout-session/".concat(tourId));
+          return (0, _axios.default)("/api/v1/bookings/checkout-session/".concat(tourId));
         case 2:
           session = _context.v;
-          // 2) redirect to checkout form
-          console.log(session);
           _context.n = 3;
           return stripe.redirectToCheckout({
             sessionId: session.data.session.id
@@ -13192,7 +13189,6 @@ if (userDataForm) {
     form.append('name', document.getElementById('name').value);
     form.append('email', document.getElementById('email').value);
     form.append('photo', document.getElementById('photo').files[0]);
-    console.log(form);
     (0, _updateSetting.updateSetting)(form, 'data');
   });
   if (userPasswordForm) {
@@ -13232,26 +13228,18 @@ if (userDataForm) {
 if (bookBtn) {
   bookBtn.addEventListener('click', /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(e) {
-      var tourId, _t;
+      var tourId;
       return _regenerator().w(function (_context2) {
-        while (1) switch (_context2.p = _context2.n) {
+        while (1) switch (_context2.n) {
           case 0:
             e.target.textContent = 'Processing...';
             tourId = e.target.dataset.tourId;
-            _context2.p = 1;
-            _context2.n = 2;
+            _context2.n = 1;
             return (0, _stripe.bookTour)(tourId);
-          case 2:
-            _context2.n = 4;
-            break;
-          case 3:
-            _context2.p = 3;
-            _t = _context2.v;
-            e.target.textContent = 'Book tour now!';
-          case 4:
+          case 1:
             return _context2.a(2);
         }
-      }, _callee2, null, [[1, 3]]);
+      }, _callee2);
     }));
     return function (_x2) {
       return _ref2.apply(this, arguments);
@@ -13283,7 +13271,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53257" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61651" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
