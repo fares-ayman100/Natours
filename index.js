@@ -45,6 +45,7 @@ app.use(
       imgSrc: [
         "'self'",
         'data:',
+        'https:',
         '*.stripe.com',
         '*.stripe.network',
       ],
@@ -57,6 +58,7 @@ app.use(
     },
   }),
 );
+
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
