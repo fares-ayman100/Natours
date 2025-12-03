@@ -14,6 +14,7 @@ const htmlSanitize = require('./Middleware/htmlSanitize');
 const mongoSanitize = require('./Middleware/querySanitize');
 const viewsRouters = require('./routes/viewsRouters');
 const compression = require('compression');
+const cors = require('cors');
 const app = express();
 
 app.set('view engine', 'pug');
@@ -21,6 +22,11 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Global Middleware
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Implement CORS
+app.use(cors());
+//app.options('*', cors());
+
 
 // Set security HTTP headers
 app.use(helmet({ contentSecurityPolicy: false }));
