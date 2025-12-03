@@ -22,7 +22,7 @@ const signup = catchAsync(async (req, res, next) => {
   const url = `${req.protocol}://${req.get('host')}/me`;
   await new Email(newUser, url).sendWelcome();
 
-  createSendToken(newUser, 201, res, { data: newUser });
+  createSendToken(newUser, 201, req, res, { data: newUser });
 });
 
 const signin = catchAsync(async (req, res, next) => {
@@ -43,7 +43,7 @@ const signin = catchAsync(async (req, res, next) => {
     );
   }
 
-  createSendToken(user, 200, res, {
+  createSendToken(user, 200, req, res, {
     message: 'Logged in successfuly',
   });
 });
@@ -132,7 +132,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
       ),
     );
   }
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 const updatedPassword = catchAsync(async (req, res, next) => {
@@ -181,7 +181,7 @@ const updatedPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 6) issue new token
-  createSendToken(user, 200, res, {
+  createSendToken(user, 200, req, res, {
     message: 'Password is Updated',
   });
 });
