@@ -23,41 +23,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set security HTTP headers
-app.use(helmet());
-
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: [
-        "'self'",
-        'https://cdn.jsdelivr.net',
-        'https://cdnjs.cloudflare.com',
-        'https://js.stripe.com',
-      ],
-      connectSrc: [
-        "'self'",
-        'https://api.stripe.com',
-        'http://localhost:3000',
-        'ws://localhost:*/',
-      ],
-      frameSrc: ["'self'", 'https://js.stripe.com'],
-      imgSrc: [
-        "'self'",
-        'data:',
-        'https:',
-        '*.stripe.com',
-        '*.stripe.network',
-      ],
-      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-      styleSrc: [
-        "'self'",
-        'https://fonts.googleapis.com',
-        "'unsafe-inline'",
-      ],
-    },
-  }),
-);
+app.use(helmet({ contentSecurityPolicy: false }));
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
