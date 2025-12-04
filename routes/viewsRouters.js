@@ -2,17 +2,12 @@ const express = require('express');
 const viewsController = require('../controllers/viewsController');
 const isLoggedIN = require('../Middleware/isLoggedIn');
 const protect = require('../Middleware/protect');
-const booking = require('../Middleware/bookingCheckout');
 const myBookings = require('../controllers/viewsController');
 
 const router = express.Router();
 router.use(isLoggedIN);
 
-router.get(
-  '/',
-  booking.creatBookingCheckout,
-  viewsController.getOverView,
-);
+router.get('/', viewsController.getOverView);
 
 router.get(`/tour/:slug`, isLoggedIN, viewsController.getTour);
 
