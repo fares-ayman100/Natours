@@ -44,6 +44,9 @@ const limiter = rateLimit({
     'Too many requests from this IP, please try again in an hour!.',
   standardHeaders: 'draft-7',
 });
+
+app.set('trust proxy', 1);
+
 app.use('/api', limiter);
 
 app.post(
