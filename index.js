@@ -13,6 +13,7 @@ const cookieParser = require('cookie-parser');
 const htmlSanitize = require('./Middleware/htmlSanitize');
 const mongoSanitize = require('./Middleware/querySanitize');
 const viewsRouters = require('./routes/viewsRouters');
+const webhook = require('./controllers/bookingController');
 const compression = require('compression');
 const cors = require('cors');
 const app = express();
@@ -44,6 +45,13 @@ const limiter = rateLimit({
   standardHeaders: 'draft-7',
 });
 app.use('/api', limiter);
+
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  webhook.webhookCheckout,
+);
+
 
 // Body parser reading the data form req.body
 app.use(express.json({ limit: '10kb' }));
