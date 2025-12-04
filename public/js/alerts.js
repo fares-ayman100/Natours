@@ -3,12 +3,12 @@ export const hideAlert = () => {
   if (el) el.parentElement.removeChild(el);
 };
 
-export const showAlert = (state, msg) => {
+export const showAlert = (state, msg, time = 5) => {
   const markup = `<div class="alert alert--${state}">${msg}</div>`;
   document
     .querySelector('body')
     .insertAdjacentHTML('afterbegin', markup);
   window.setTimeout(() => {
     hideAlert();
-  }, 4000);
+  }, time * 1000);
 };

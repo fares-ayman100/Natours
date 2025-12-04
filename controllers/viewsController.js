@@ -3,6 +3,7 @@ const Tour = require('../Models/toursModel');
 const AppError = require('../utils/appError');
 
 const catchAsync = require('../utils/catchAsync');
+
 const getOverView = catchAsync(async (req, res, next) => {
   // 1) Get The Tours Data from collection
   const tours = await Tour.find();
@@ -57,10 +58,18 @@ const getAccount = (req, res) => {
   });
 };
 
+const alert = (req, res) => {
+  const { alert } = req.query;
+  if (alert === 'booking')
+    res.locals.alert =
+      'Your booking was successful! Please check your email for confirmatino.';
+};
+
 module.exports = {
   getOverView,
   getTour,
   getLoginUser,
   getAccount,
   getMyBooking,
+  alert,
 };

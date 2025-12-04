@@ -6,6 +6,7 @@ const myBookings = require('../controllers/viewsController');
 
 const router = express.Router();
 router.use(isLoggedIN);
+router.get('/', myBookings.alert);
 
 router.get('/', viewsController.getOverView);
 
