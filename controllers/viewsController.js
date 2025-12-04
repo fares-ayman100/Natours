@@ -58,11 +58,12 @@ const getAccount = (req, res) => {
   });
 };
 
-const alert = (req, res) => {
+const alert = (req, res, next) => {
   const { alert } = req.query;
   if (alert === 'booking')
     res.locals.alert =
       'Your booking was successful! Please check your email for confirmatino.';
+  next();
 };
 
 module.exports = {
