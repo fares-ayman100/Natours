@@ -30,7 +30,7 @@ exports.checkoutSesstion = catchAsync(async (req, res, next) => {
             name: `${tour.name} Tour`,
             description: tour.summary,
             images: [
-              `https://natours.dev/img/tours/${tour.imageCover}`,
+              `${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`,
             ],
           },
         },
@@ -48,7 +48,9 @@ exports.checkoutSesstion = catchAsync(async (req, res, next) => {
 
 const createBookingCheckout = async (session) => {
   const tour = session.client_reference_id;
-  const user = (await User.findOne(session.customer_email)).id;
+  const user = (
+    await User.findOne({ email: session.customer_email })
+  ).id;
   const price =
     session.line_items[0].price_data.unit_amount / 100;
   await Booking.create({ tour, user, price });
@@ -61,7 +63,7 @@ exports.webhookCheckout = (req, res, next) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       signature,
-      process.env.WEBHOOK_SIGNATURE_SECRET,
+      process.env.STRIPE_WEBHOOK_SIGNATURE,
     );
   } catch (err) {
     return res.status(400).send(`Webhook error: ${err.message}`);
