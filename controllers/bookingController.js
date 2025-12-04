@@ -4,7 +4,6 @@ const httpStatus = require('../utils/httpStatus');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 const Booking = require('../Models/booking');
-const { create } = require('../Models/usersModel');
 const User = require('../Models/usersModel');
 
 exports.checkoutSesstion = catchAsync(async (req, res, next) => {
@@ -56,7 +55,7 @@ const createBookingCheckout = async (session) => {
   await Booking.create({ tour, user, price });
 };
 
-exports.webhookCheckout = (req, res, next) => {
+exports.webhookCheckout = async (req, res, next) => {
   const signature = req.headers['stripe-signature'];
   let event;
   try {
@@ -68,8 +67,8 @@ exports.webhookCheckout = (req, res, next) => {
   } catch (err) {
     return res.status(400).send(`Webhook error: ${err.message}`);
   }
-  if (event.type === 'checkout.session.complete')
-    createBookingCheckout(event.data.object);
+  if (event.type === 'checkout.session.completed')
+    await createBookingCheckout(event.data.object);
   res.status(200).json({ received: true });
 };
 
