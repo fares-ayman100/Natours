@@ -78,3 +78,43 @@ Admin / Logs
 ```bash
 git clone https://github.com/fares-ayman100/Natours.git
 cd Natours
+```
+
+### 2. Install
+```bash
+npm install
+```
+
+### 3. Environment Variables
+```bash
+NODE_ENV=development
+PORT=3000
+
+DATABASE=<your MongoDB connection string>
+DATABASE_PASSWORD=<db password>
+
+JWT_SECRET=<your jwt secret>
+JWT_EXPIRES_IN=90d
+JWT_COOKIE_EXPIRES_IN=90
+
+EMAIL_HOST=<smtp host>          # e.g., smtp.mailtrap.io or smtp.gmail.com
+EMAIL_PORT=<smtp port>          # e.g., 2525 for Mailtrap, 587 for TLS Gmail
+EMAIL_USERNAME=<email username>
+EMAIL_PASSWORD=<email password>
+EMAIL_FROM="Natours <no-reply@natours.com>"
+
+STRIPE_SECRET_KEY=<stripe secret key>
+STRIPE_WEBHOOK_SECRET=<stripe webhook secret>
+
+FRONTEND_URL=https://natours.obl.ee
+```
+
+### 4. Run (development)
+```bash
+npm run start:dev
+```
+
+
+ذذ
+ذذذ
+
