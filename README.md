@@ -19,17 +19,17 @@ This project was implemented following Jonas Schmedtmann's Node.js Bootcamp and 
 ## 📸 Screenshots
 
 Top of repo / Hero  
-![Homepage](./public/img/snapshout/overview-page.png)
+![Homepage](./public/img/Snapshout/overview-page.png)
 
 Tour detail & map  
-![Tour Detail](./public/img/snapshout/tours-details.png)  
-![Map Location](./public/img/snapshout/map.png)
+![Tour Detail](./public/img/Snapshout/tours-details.png)  
+![Map Location](./public/img/Snapshout/map.png)
 
 checkout  
-![Checkout](./public/img/snapshout/payment.png)  
+![Checkout](./public/img/Snapshout/payment.png)  
 
 User Dashboard  
-![User Dashboard](./public/img/snapshout/user-profile.png)  
+![User Dashboard](./public/img/Snapshout/user-profile.png)  
 
 ---
 
