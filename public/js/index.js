@@ -5,10 +5,12 @@ import { logout } from './logout';
 import { updateSetting } from './updateSetting';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
+import { signup } from './signup';
 
 // DOM Element
 const map = document.getElementById('map');
 const loginForm = document.querySelector('.form-user-login');
+const signupForm = document.querySelector('.form-user-signup');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector(
@@ -29,6 +31,34 @@ if (loginForm) {
     login(email, password);
   });
 }
+
+if (signupForm) {
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById(
+      'passwordConfirm',
+    ).value;
+
+    if (!name || !email || !password || !passwordConfirm) {
+      return showAlert('error', 'Please fill all fields');
+    }
+    if (password.length < 8) {
+      return showAlert(
+        'error',
+        'Password must be at least 8 characters',
+      );
+    }
+    if (password !== passwordConfirm) {
+      return showAlert('error', 'Passwords do not match');
+    }
+
+    await signup(name, email, password, passwordConfirm);
+  });
+}
+
 if (logoutBtn) {
   logoutBtn.addEventListener('click', logout);
 }

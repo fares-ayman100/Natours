@@ -58,6 +58,12 @@ const getAccount = (req, res) => {
   });
 };
 
+const getSignupUser = (req, res) => {
+  res.status(200).render('signup', {
+    title: 'Sign up ',
+  });
+};
+
 const alert = (req, res, next) => {
   const { alert } = req.query;
   if (alert === 'booking')
@@ -70,6 +76,7 @@ module.exports = {
   getOverView,
   getTour,
   getLoginUser,
+  getSignupUser,
   getAccount,
   getMyBooking,
   alert,

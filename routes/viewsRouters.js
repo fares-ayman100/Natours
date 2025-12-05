@@ -10,9 +10,10 @@ router.get('/', myBookings.alert);
 
 router.get('/', viewsController.getOverView);
 
-router.get(`/tour/:slug`, isLoggedIN, viewsController.getTour);
+router.get(`/tour/:slug`, viewsController.getTour);
 
-router.get('/login', isLoggedIN, viewsController.getLoginUser);
+router.get('/login', viewsController.getLoginUser);
+router.get('/signup',viewsController.getSignupUser)
 router.get('/my-bookings', protect,myBookings.getMyBooking);
 
 router.get('/me', protect, viewsController.getAccount);
