@@ -19,19 +19,17 @@ This project was implemented following Jonas Schmedtmann's Node.js Bootcamp and 
 ## 📸 Screenshots
 
 Top of repo / Hero  
-![Homepage](./assets/screenshots/homepage.png)
+![Homepage](./public/img/snapshout/overview-page.png)
 
 Tour detail & map  
-![Tour Detail](./assets/screenshots/tour-detail.png)  
-![Map Location](./assets/screenshots/map-location.png)
+![Tour Detail](./public/img/snapshout/tours-details.png)  
+![Map Location](./public/img/snapshout/map.png)
 
-Booking flow & checkout  
-![Checkout](./assets/screenshots/booking-checkout.png)  
-![Booking Email](./assets/screenshots/booking-success-email.png)
+checkout  
+![Checkout](./public/img/snapshout/payment.png)  
 
-Admin / Logs  
-![Admin Dashboard](./assets/screenshots/admin-dashboard.png)  
-![Stripe Webhook Log](./assets/screenshots/stripe-webhook-log.png)
+User Dashboard  
+![User Dashboard](./public/img/snapshout/user-profile.png)  
 
 ---
 
