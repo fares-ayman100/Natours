@@ -114,6 +114,21 @@ FRONTEND_URL=https://natours.obl.ee
 npm run start:dev
 ```
 
+## 🧭 Project Structure (short)
+```bash
+Natours/
+├─ controllers/
+├─ models/
+├─ routes/
+├─ views/
+├─ public/
+├─ utils/
+├─ app.js
+├─ server.js
+└─ README.md
+```
+
+
 
 ذذ
 ذذذ
