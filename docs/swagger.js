@@ -18,6 +18,11 @@ const options = {
         url: 'http://localhost:3000',
         description: 'Development',
       },
+
+      {
+        url: 'https://natours.oblien.com',
+        description: 'Production',
+      },
       // add production URL(s) here if needed
     ],
     // IMPORTANT: define tags in the exact order you want them to appear
