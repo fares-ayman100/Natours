@@ -3,19 +3,21 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const cors = require('cors');
+const compression = require('compression');
+const cookieParser = require('cookie-parser');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./docs/swagger');
 const tourRoutes = require('./routes/toursRoutes');
 const usersRoutes = require('./routes/usersRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
 const bookingRouutes = require('./routes/bookingRoutes');
 const errorController = require('./controllers/errorController');
 const AppError = require('./utils/appError');
-const cookieParser = require('cookie-parser');
 const htmlSanitize = require('./Middleware/htmlSanitize');
 const mongoSanitize = require('./Middleware/querySanitize');
 const viewsRouters = require('./routes/viewsRouters');
 const webhook = require('./controllers/bookingController');
-const compression = require('compression');
-const cors = require('cors');
 const app = express();
 
 app.set('view engine', 'pug');
@@ -27,7 +29,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Implement CORS
 app.use(cors());
 //app.options('*', cors());
-
 
 // Set security HTTP headers
 app.use(helmet({ contentSecurityPolicy: false }));
@@ -46,6 +47,14 @@ const limiter = rateLimit({
 });
 
 app.set('trust proxy', 1);
+
+// API DOC Suger
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec),
+);
+
 
 app.use('/api', limiter);
 
