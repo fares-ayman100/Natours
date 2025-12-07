@@ -20,7 +20,7 @@ const options = {
       },
 
       {
-        url: 'https://natours.oblien.com',
+        url: 'https://natours.obl.ee',
         description: 'Production',
       },
       // add production URL(s) here if needed
