@@ -52,8 +52,9 @@ app.set('trust proxy', 1);
 app.use(
   '/api-docs',
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec),
+  swaggerUi.setup(swaggerSpec, swaggerSpec.uiOptions),
 );
+
 
 
 app.use('/api', limiter);

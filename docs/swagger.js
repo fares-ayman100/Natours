@@ -1,4 +1,5 @@
 // docs/swagger.js
+
 const swaggerJsdoc = require('swagger-jsdoc');
 const path = require('path');
 
@@ -18,14 +19,11 @@ const options = {
         url: 'http://localhost:3000',
         description: 'Development',
       },
-
       {
         url: 'https://natours.obl.ee',
         description: 'Production',
       },
-      // add production URL(s) here if needed
     ],
-    // IMPORTANT: define tags in the exact order you want them to appear
     tags: [
       {
         name: 'Tours',
@@ -37,21 +35,12 @@ const options = {
       },
       {
         name: 'Users - Authentication',
-        description:
-          'Create / Update / Delete / Auth endpoints for users (protected where noted)',
+        description: 'Authentication endpoints',
       },
-      {
-        name: 'Reviews',
-        description:
-          'Create / Read / Update / Delete reviews (protected where noted)',
-      },
-      {
-        name: 'Bookings',
-        description: 'Bookings & Stripe checkout endpoints',
-      },
+      { name: 'Reviews', description: 'Review endpoints' },
+      { name: 'Bookings', description: 'Booking endpoints' },
     ],
   },
-  // IMPORTANT: patterns are relative to this file's directory (__dirname)
   apis: [
     path.join(baseDir, 'swagger_docs', '*.swagger.js'),
     path.join(baseDir, 'swagger_docs', '*.js'),
@@ -60,19 +49,11 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 
-// UI options: show GET first inside each path
+// UI options
 const swaggerUiOptions = {
   swaggerOptions: {
     operationsSorter: function (a, b) {
-      const order = [
-        'get',
-        'post',
-        'patch',
-        'put',
-        'delete',
-        'options',
-        'head',
-      ];
+      const order = ['get', 'post', 'patch', 'put', 'delete'];
       const ma = order.indexOf(a.get('method'));
       const mb = order.indexOf(b.get('method'));
       if (ma !== mb) return ma - mb;
@@ -81,9 +62,10 @@ const swaggerUiOptions = {
   },
 };
 
-// Reorder swaggerSpec.paths so that paths with tags appear grouped by tag order.
-// This only affects presentation order in Swagger UI (does NOT change the spec content).
-(function reorderPathsByTagOrder() {
+// ------------------------------
+// ORDERING LOGIC (UPDATED)
+// ------------------------------
+(function reorderPaths() {
   if (!swaggerSpec || !swaggerSpec.paths) return;
 
   const tagOrder = [
@@ -95,87 +77,70 @@ const swaggerUiOptions = {
   ];
 
   const paths = swaggerSpec.paths;
-  const picked = {}; // paths already added
+  const picked = {};
   const reordered = {};
 
-  // helper: check if a path has the tag in any operation
-  function pathHasTag(pathObj, tagName) {
-    return Object.keys(pathObj).some((method) => {
-      const op = pathObj[method];
-      if (!op || !op.tags) return false;
-      return op.tags.includes(tagName);
-    });
+  function pathHasTag(pathObj, tag) {
+    return Object.values(pathObj).some(
+      (op) => op.tags && op.tags.includes(tag),
+    );
   }
 
-  // helper: order methods inside a path (GET first)
+  function isParamPath(pathStr) {
+    return /\{[^}]+\}/.test(pathStr);
+  }
+
+  function computeSortKey(pathStr, pathObj) {
+    const collection = !isParamPath(pathStr);
+    if (collection) return 0;
+
+    const hasGet = !!pathObj.get;
+    const hasPatch = !!pathObj.patch;
+    const hasDelete = !!pathObj.delete;
+
+    if (hasGet) return 10;
+    if (hasPatch) return 20;
+    if (hasDelete) return 30;
+    return 40;
+  }
+
   function orderMethods(pathObj) {
-    const methodOrder = [
-      'get',
-      'post',
-      'patch',
-      'put',
-      'delete',
-      'options',
-      'head',
-    ];
-    const ordered = {};
-    methodOrder.forEach((m) => {
-      if (Object.prototype.hasOwnProperty.call(pathObj, m)) {
-        ordered[m] = pathObj[m];
-      }
+    const order = ['get', 'post', 'patch', 'put', 'delete'];
+    const o = {};
+    order.forEach((m) => {
+      if (pathObj[m]) o[m] = pathObj[m];
     });
-    // append any other methods not in methodOrder
     Object.keys(pathObj).forEach((m) => {
-      if (!ordered[m]) ordered[m] = pathObj[m];
+      if (!o[m]) o[m] = pathObj[m];
     });
-    return ordered;
+    return o;
   }
 
-  // 1) Add paths that belong to each tag in order
   tagOrder.forEach((tag) => {
-    Object.keys(paths).forEach((p) => {
-      if (picked[p]) return;
-      const pathObj = paths[p];
-      if (pathHasTag(pathObj, tag)) {
-        reordered[p] = orderMethods(pathObj);
-        picked[p] = true;
-      }
-    });
-  });
+    const matched = Object.keys(paths).filter(
+      (p) => !picked[p] && pathHasTag(paths[p], tag),
+    );
 
-  // 2) Append remaining paths (those without matching tags or unmatched)
-  Object.keys(paths).forEach((p) => {
-    if (!picked[p]) {
+    matched.sort((a, b) => {
+      const ka = computeSortKey(a, paths[a]);
+      const kb = computeSortKey(b, paths[b]);
+      if (ka !== kb) return ka - kb;
+      return a.localeCompare(b);
+    });
+
+    matched.forEach((p) => {
       reordered[p] = orderMethods(paths[p]);
       picked[p] = true;
-    }
+    });
   });
 
-  // replace
+  Object.keys(paths).forEach((p) => {
+    if (!picked[p]) reordered[p] = orderMethods(paths[p]);
+  });
+
   swaggerSpec.paths = reordered;
 })();
 
-// Attach UI options so app can use them: require('./docs/swagger') returns swaggerSpec
 swaggerSpec.uiOptions = swaggerUiOptions;
-
-// debug helpful logs
-if (
-  !swaggerSpec.paths ||
-  Object.keys(swaggerSpec.paths).length === 0
-) {
-  // console.warn(
-  //   '⚠️  swagger-jsdoc generated NO paths. Check docs/swagger_docs/ JSDoc blocks and file globs.',
-  // );
-  const glob = require('glob');
-  const matched = glob.sync(
-    path.join(baseDir, 'swagger_docs', '*.swagger.js'),
-  );
-  //console.log('Matched files:', matched);
-} else {
-  // console.log(
-  //   '✅ swagger-jsdoc generated paths (ordered):',
-  //   Object.keys(swaggerSpec.paths),
-  // );
-}
 
 module.exports = swaggerSpec;
