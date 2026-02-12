@@ -6,14 +6,14 @@ const AppError = require('../utils/appError');
 module.exports = catchAsync(async (req, res, next) => {
   //1) check pass token
   let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
-  }
+   if (req.cookies.jwt) {
+     token = req.cookies.jwt;
+   } else if (
+     req.headers.authorization &&
+     req.headers.authorization.startsWith('Bearer')
+   ) {
+     token = req.headers.authorization.split(' ')[1];
+   } 
   if (!token || token == 'null') {
     return next(
       new AppError(
@@ -48,7 +48,6 @@ module.exports = catchAsync(async (req, res, next) => {
   }
   req.user = currentUser;
   res.locals.user = currentUser;
-
 
   next();
 });

@@ -22,7 +22,7 @@ const signup = catchAsync(async (req, res, next) => {
   const url = `${req.protocol}://${req.get('host')}/me`;
   await new Email(newUser, url).sendWelcome();
 
-  createSendToken(newUser, 201, req, res, { data: newUser });
+  createSendToken(newUser, 201, req, res);
 });
 
 const signin = catchAsync(async (req, res, next) => {
@@ -43,9 +43,7 @@ const signin = catchAsync(async (req, res, next) => {
     );
   }
 
-  createSendToken(user, 200, req, res, {
-    message: 'Logged in successfuly',
-  });
+  createSendToken(user, 200, req, res);
 });
 
 const logOut = (req, res) => {

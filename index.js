@@ -1,11 +1,13 @@
 const express = require('express');
 const morgan = require('morgan');
-const helmet = require('helmet');
 const path = require('path');
-const rateLimit = require('express-rate-limit');
-const cors = require('cors');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const hpp = require('hpp');
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs/swagger');
 const tourRoutes = require('./routes/toursRoutes');
@@ -14,28 +16,10 @@ const reviewsRoutes = require('./routes/reviewsRoutes');
 const bookingRouutes = require('./routes/bookingRoutes');
 const errorController = require('./controllers/errorController');
 const AppError = require('./utils/appError');
-const htmlSanitize = require('./Middleware/htmlSanitize');
-const mongoSanitize = require('./Middleware/querySanitize');
 const viewsRouters = require('./routes/viewsRouters');
 const webhook = require('./controllers/bookingController');
+
 const app = express();
-
-app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
-
-// Global Middleware
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Implement CORS
-app.use(cors());
-//app.options('*', cors());
-
-// Set security HTTP headers
-app.use(helmet({ contentSecurityPolicy: false }));
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
 
 // Limit requests from same API
 const limiter = rateLimit({
@@ -46,6 +30,24 @@ const limiter = rateLimit({
   standardHeaders: 'draft-7',
 });
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
+// Global Middleware
+app.use(express.static(path.join(__dirname, 'public')));
+
+//app.options('*', cors());
+
+// Set security HTTP headers
+app.use(helmet({ contentSecurityPolicy: false }));
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
+// Implement CORS
+app.use(cors());
+
 app.set('trust proxy', 1);
 
 // API DOC Suger
@@ -55,29 +57,37 @@ app.use(
   swaggerUi.setup(swaggerSpec, swaggerSpec.uiOptions),
 );
 
-
-
-app.use('/api', limiter);
-
 app.post(
   '/webhook-checkout',
   express.raw({ type: 'application/json' }),
   webhook.webhookCheckout,
 );
 
+app.use('/api', limiter);
 
 // Body parser reading the data form req.body
 app.use(express.json({ limit: '10kb' }));
-// To read data come from HTML (Form Data)
+
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 app.use(cookieParser());
 
-// Data sanitization against NoSQL query injection
-app.use(mongoSanitize);
+// Against from NoSql query injection
+app.use(mongoSanitize());
 
-// Data sanitization against XSS
-app.use(htmlSanitize);
+// Prevent parameter pollution
+app.use(
+  hpp({
+    whitelist: [
+      'price',
+      'difficulty',
+      'duration',
+      'maxGroupSize',
+      'ratingsQuantity',
+      'ratingsAverage',
+    ],
+  }),
+);
 
 app.use(compression());
 
