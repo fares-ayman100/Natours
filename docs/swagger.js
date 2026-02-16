@@ -20,7 +20,7 @@ const options = {
         description: 'Development',
       },
       {
-        url: 'https://natours.obl.ee',
+        url: 'https://natours.vercel.app',
         description: 'Production',
       },
     ],
