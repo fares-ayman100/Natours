@@ -12,7 +12,14 @@ This project was implemented following Jonas Schmedtmann's Node.js Bootcamp and 
 ---
 
 ## 🚀 Live Demo
-**https://natours.obl.ee**
+**https://natours-fares.vercel.app/**
+
+---
+
+---
+
+## 📋 API DOC
+**https://natours-fares.vercel.app/api-docs**
 
 ---
 
