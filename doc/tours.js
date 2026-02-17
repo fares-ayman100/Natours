@@ -9,23 +9,51 @@ const paths = {
         'Get a list of all tours. Supports filtering, sorting, pagination, and field limiting via query parameters.',
       parameters: [
         {
+          name: 'price[gte]',
+          in: 'query',
+          description: 'Minimum price.',
+          schema: { type: 'number' },
+        },
+        {
+          name: 'price[lte]',
+          in: 'query',
+          description: 'Maximum price.',
+          schema: { type: 'number' },
+        },
+        {
+          name: 'ratingsAverage[gte]',
+          in: 'query',
+          description: 'Minimum average rating (1-5).',
+          schema: { type: 'number', minimum: 1, maximum: 5 },
+        },
+        {
+          name: 'difficulty',
+          in: 'query',
+          description: 'Filter by difficulty.',
+          schema: { type: 'string', enum: ['easy', 'medium', 'difficult'] },
+        },
+        {
           name: 'page',
           in: 'query',
+          description: 'Page number (starts from 1).',
           schema: { type: 'integer', minimum: 1 },
         },
         {
           name: 'limit',
           in: 'query',
+          description: 'Number of items per page.',
           schema: { type: 'integer', minimum: 1 },
         },
         {
           name: 'sort',
           in: 'query',
+          description: 'Sort by field(s), prefix with - for descending.',
           schema: { type: 'string' },
         },
         {
           name: 'fields',
           in: 'query',
+          description: 'Select specific fields to return (comma separated).',
           schema: { type: 'string' },
         },
       ],

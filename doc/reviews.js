@@ -40,6 +40,38 @@ const paths = {
       description:
         'Get a list of all reviews. Authentication required for access.',
       security: [{ BearerAuth: [] }],
+      parameters: [
+        {
+          name: 'rating[gte]',
+          in: 'query',
+          description: 'Minimum rating (1-5).',
+          schema: { type: 'number', minimum: 1, maximum: 5 },
+        },
+        {
+          name: 'rating[lte]',
+          in: 'query',
+          description: 'Maximum rating (1-5).',
+          schema: { type: 'number', minimum: 1, maximum: 5 },
+        },
+        {
+          name: 'tour',
+          in: 'query',
+          description: 'Filter by tour id (ObjectId).',
+          schema: { type: 'string', format: 'objectId' },
+        },
+        {
+          name: 'user',
+          in: 'query',
+          description: 'Filter by user id (ObjectId).',
+          schema: { type: 'string', format: 'objectId' },
+        },
+        {
+          name: 'sort',
+          in: 'query',
+          description: 'Sort reviews by field(s).',
+          schema: { type: 'string' },
+        },
+      ],
       responses: {
         200: {
           description: 'List of reviews.',
