@@ -47,10 +47,14 @@ const signin = catchAsync(async (req, res, next) => {
 });
 
 const logOut = (req, res) => {
-  res.cookie('jwt', 'loogedout', {
+  const cookieOption = {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
-  });
+  };
+
+  if (process.env.NODE_ENV === 'production')
+    cookieOption.secure = true;
+  res.cookie('jwt', 'loggedout', cookieOption);
   res.status(200).json({ status: httpStatus.SUCCESS });
 };
 
