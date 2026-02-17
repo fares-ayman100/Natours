@@ -17,7 +17,7 @@ This project was implemented following Jonas Schmedtmann's Node.js Bootcamp and 
 ---
 
 ## 📋 API DOC
-**https://natours-fares.vercel.app/api-docs**
+**https://natours-fares.vercel.app/api-docs/**
 
 ---
 
