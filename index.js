@@ -9,7 +9,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./docs/swagger');
+const swaggerSpec = require('./doc/swagger');
 const tourRoutes = require('./routes/toursRoutes');
 const usersRoutes = require('./routes/usersRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
@@ -50,20 +50,6 @@ app.use(cors());
 
 app.set('trust proxy', 1);
 
-// API DOC Suger
-app.use(
-  '/api-docs',
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, {
-    customCssUrl:
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui.min.css',
-    customJs: [
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-bundle.min.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-standalone-preset.min.js',
-    ],
-  }),
-);
-
 app.post(
   '/webhook-checkout',
   express.raw({ type: 'application/json' }),
@@ -102,6 +88,20 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
+
+// swagger-api
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customCssUrl:
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui.min.css',
+    customJs: [
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-bundle.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-standalone-preset.min.js',
+    ],
+  }),
+);
 
 // Routes
 
