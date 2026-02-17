@@ -52,8 +52,10 @@ const logOut = (req, res) => {
     httpOnly: true,
   };
 
-  if (process.env.NODE_ENV === 'production')
+  if (process.env.NODE_ENV === 'production') {
     cookieOption.secure = true;
+    cookieOption.sameSite = 'none';
+  }
   res.cookie('jwt', 'loggedout', cookieOption);
   res.status(200).json({ status: httpStatus.SUCCESS });
 };
