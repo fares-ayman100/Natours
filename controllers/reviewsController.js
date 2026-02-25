@@ -1,6 +1,13 @@
 const Review = require('../Models/reviewsModel');
 const factory = require('./handlerFactory');
 
+const setTourUserIds = (req, res, next) => {
+  // Nested Routes
+  if (!req.body.tour) req.body.tour = req.params.tourID;
+  if (!req.body.user) req.body.user = req.user.id;
+  next();
+};
+
 const getAllReviews = factory.getAllDoc(Review);
 
 const getReview = factory.getDoc(Review);
@@ -17,4 +24,5 @@ module.exports = {
   getReview,
   deleteReview,
   updateReview,
+  setTourUserIds,
 };

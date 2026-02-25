@@ -41,7 +41,7 @@ module.exports = class Email {
       to: this.to,
       subject,
       html,
-      text: htmlToText.convert(html),
+      text: htmlToText.convert(html), // to reduce the spam
     };
 
     // 2) If production → use Resend API

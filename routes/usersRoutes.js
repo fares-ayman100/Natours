@@ -1,10 +1,6 @@
 const express = require('express');
-const userController = require('../controllers/usersController');
 const authController = require('../controllers/authController');
-const protect = require('../Middleware/protect');
-const allawedTo = require('../Middleware/allawedTo');
-const uploadImage = require('../Middleware/uploadImage');
-const resizeUserImage = require('../Middleware/resizeUserImage');
+const userController = require('../controllers/usersController');
 const router = express.Router();
 router.route('/signup').post(authController.signup);
 router.route('/signin').post(authController.signin);
@@ -18,7 +14,7 @@ router
   .patch(authController.resetPassword);
 
 // Middleware
-router.use(protect);
+router.use(authController.protect);
 
 router
   .route('/getMe')
@@ -27,8 +23,8 @@ router
 router
   .route('/updateMe')
   .patch(
-    uploadImage.single('photo'),
-    resizeUserImage,
+    userController.uploadUserPhoto,
+    userController.resizeUserPhoto,
     userController.updatedMe,
   );
 
@@ -39,7 +35,7 @@ router
   .patch(authController.updatedPassword);
 
 // Middleware
-router.use(allawedTo('admin'));
+router.use(authController.restrictTo('admin'));
 
 router.route('/').get(userController.getAllUsers);
 

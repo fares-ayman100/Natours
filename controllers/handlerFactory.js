@@ -3,19 +3,44 @@ const catchAsync = require('../utils/catchAsync');
 const APIFeatures = require('../utils/apiFeaturs');
 const AppError = require('../utils/appError');
 
-const delteteDoc = (Model) =>
+const getAllDoc = (Model) =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndDelete(req.params.id);
+    let filter = {};
+    if (req.params.tourID) filter = { tour: req.params.tourID };
+    const featuers = new APIFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .pagination();
+    //const docs = await featuers.query.explain();
+    const docs = await featuers.query;
+    res.status(200).json({
+      status: httpStatus.SUCCESS,
+      restult: docs.length,
+      docs,
+    });
+  });
+
+const getDoc = (Model, populate) =>
+  catchAsync(async (req, res, next) => {
+    let query = await Model.findById(req.params.id, {
+      __v: false,
+    });
+
+    if (populate) query = query.populate(populate);
+
+    const doc = await query;
     if (!doc) {
       return next(
         new AppError('No Document Found with that ID', 404),
       );
     }
-    res.status(204).json({
+    res.status(200).json({
       status: httpStatus.SUCCESS,
-      data: null,
+      data: doc,
     });
   });
+
 
 const createDoc = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -47,47 +72,19 @@ const updateDoc = (Model) =>
     });
   });
 
-const getDoc = (Model, populate) =>
+const delteteDoc = (Model) =>
   catchAsync(async (req, res, next) => {
-    let query = await Model.findById(req.params.id, {
-      __v: false,
-    });
-
-    if (populate) query = query.populate(populate);
-
-    const doc = await query;
+    const doc = await Model.findByIdAndDelete(req.params.id);
     if (!doc) {
       return next(
         new AppError('No Document Found with that ID', 404),
       );
     }
-    res.status(200).json({
+    res.status(204).json({
       status: httpStatus.SUCCESS,
-      data: doc,
+      data: null,
     });
   });
-
-const getAllDoc = (Model) =>
-  catchAsync(async (req, res, next) => {
-    let filter = {};
-    if (req.params.tourID) filter = { tour: req.params.tourID };
-    const featuers = new APIFeatures(
-      Model.find(filter),
-      req.query,
-    )
-      .filter()
-      .sort()
-      .limitFields()
-      .pagination();
-    //const docs = await featuers.query.explain();
-    const docs = await featuers.query;
-    res.status(200).json({
-      status: httpStatus.SUCCESS,
-      restult: docs.length,
-      docs,
-    });
-  });
-
 
 module.exports = {
   delteteDoc,

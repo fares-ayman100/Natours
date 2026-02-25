@@ -1,16 +1,15 @@
 const express = require('express');
-const protect = require('../Middleware/protect');
 const bookingController = require('../controllers/bookingController');
-const allawedTo = require('../Middleware/allawedTo');
+const authController = require('../controllers/authController');
 const router = express.Router();
 
-router.use(protect);
+router.use(authController.protect);
 
 router
   .route('/checkout-session/:tourId')
   .get(bookingController.checkoutSesstion);
 
-router.use(allawedTo('admin', 'lead-guide'));
+router.use(authController.restrictTo('admin', 'lead-guide'));
 
 router
   .route('/')

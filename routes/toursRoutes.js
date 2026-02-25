@@ -1,10 +1,7 @@
 const express = require('express');
 const tourController = require('../controllers/toursController');
 const reviewRouter = require('../routes/reviewsRoutes');
-const protect = require('../Middleware/protect');
-const allawedTo = require('../Middleware/allawedTo');
-const uploadImage = require('../Middleware/uploadImage');
-const resizeTourImage = require('../Middleware/resizeTourImage');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -27,8 +24,8 @@ router
 router
   .route('/monthly-plan/:year')
   .get(
-    protect,
-    allawedTo('admin', 'lead-guide'),
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
     tourController.monthlyPlan,
   );
 
@@ -36,8 +33,8 @@ router
   .route('/')
   .get(tourController.getAllTours)
   .post(
-    protect,
-    allawedTo('admin', 'lead-guide'),
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
     tourController.createTour,
   );
 
@@ -45,24 +42,15 @@ router
   .route('/:id')
   .get(tourController.getTour)
   .patch(
-    protect,
-    allawedTo('admin', 'lead-guide'),
-    uploadImage.fields([
-      {
-        name: 'imageCover',
-        maxCount: 1,
-      },
-      {
-        name: 'images',
-        maxCount: 3,
-      },
-    ]),
-    resizeTourImage,
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.uploadTourImages,
+    tourController.resizeTourImages,
     tourController.updateTour,
   )
   .delete(
-    protect,
-    allawedTo('admin', 'lead-guide'),
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
     tourController.deleteTour,
   );
 

@@ -7,7 +7,7 @@ process.on('uncaughtException', (err) => {
  require('dotenv').config();
  const mongoose = require('mongoose');
  const qs = require('qs');
- const app = require('./index');
+ const app = require('./app');
 
  app.set('query parser', (str) => qs.parse(str));
 const DB = process.env.DATABASE;
