@@ -28,7 +28,7 @@ const options = {
         description: 'Local server',
       },
       {
-        url: 'https://natours-fares.vercel.app',
+        url: 'https://natours-fares.vercel.app/api/v1',
         description: 'Production server',
       },
     ],
@@ -157,12 +157,7 @@ const options = {
         },
         AuthSignupInput: {
           type: 'object',
-          required: [
-            'name',
-            'email',
-            'password',
-            'passwordConfirm',
-          ],
+          required: ['name', 'email', 'password', 'passwordConfirm'],
           properties: {
             name: { type: 'string', example: 'Jon Doe' },
             email: {
@@ -270,16 +265,16 @@ const options = {
     },
     tags: [
       {
+        name: 'Tours',
+        description: 'Tour management endpoints',
+      },
+      {
         name: 'Authentication',
         description: 'User authentication endpoints',
       },
       {
         name: 'Users',
         description: 'User management endpoints',
-      },
-      {
-        name: 'Tours',
-        description: 'Tour management endpoints',
       },
       {
         name: 'Reviews',

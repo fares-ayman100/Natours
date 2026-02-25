@@ -68,13 +68,40 @@ const paths = {
         {
           name: 'sort',
           in: 'query',
-          description: 'Sort reviews by field(s).',
+          description: 'Sort reviews by field(s), prefix with - for descending.',
           schema: { type: 'string' },
+          example: '-createdAt,price,-ratingsAverage',
         },
       ],
       responses: {
         200: {
           description: 'List of reviews.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'success' },
+                  restult: { type: 'number', example: 3 },
+                  docs: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/Review' },
+                  },
+                },
+              },
+              example: {
+                status: 'success',
+                restult: 3,
+                docs: [
+                  {
+                    _id: '60d21b4667d0d8992e610c90',
+                    review: 'Great tour!',
+                    rating: 5,
+                  },
+                ],
+              },
+            },
+          },
         },
         401: { description: 'Not authenticated.' },
       },

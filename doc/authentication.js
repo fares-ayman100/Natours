@@ -17,9 +17,54 @@ const paths = {
       responses: {
         201: {
           description: 'User created and token issued.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'success' },
+                  token: { type: 'string' },
+                  data: {
+                    type: 'object',
+                    properties: {
+                      user: { $ref: '#/components/schemas/User' },
+                    },
+                  },
+                },
+              },
+              example: {
+                status: 'success',
+                token: 'JWT_TOKEN_HERE',
+                data: {
+                  user: {
+                    _id: '60d21b4667d0d8992e610c85',
+                    name: 'Jon Doe',
+                    email: 'jon@example.com',
+                    photo: 'default.jpg',
+                    role: 'user',
+                  },
+                },
+              },
+            },
+          },
         },
         400: {
           description: 'Validation error or email already exists.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'faild' },
+                  message: { type: 'string', example: 'Email Is Already Exist' },
+                },
+              },
+              example: {
+                status: 'faild',
+                message: 'Email Is Already Exist',
+              },
+            },
+          },
         },
       },
     },
@@ -40,6 +85,21 @@ const paths = {
       responses: {
         200: {
           description: 'Authenticated successfully.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'success' },
+                  token: { type: 'string' },
+                },
+              },
+              example: {
+                status: 'success',
+                token: 'JWT_TOKEN_HERE',
+              },
+            },
+          },
         },
         400: { description: 'Email or password missing.' },
         401: { description: 'Incorrect email or password.' },
@@ -55,6 +115,19 @@ const paths = {
       responses: {
         200: {
           description: 'Logout successful.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'success' },
+                },
+              },
+              example: {
+                status: 'success',
+              },
+            },
+          },
         },
       },
     },
@@ -78,6 +151,24 @@ const paths = {
       responses: {
         200: {
           description: 'Reset token sent to email.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'success' },
+                  message: {
+                    type: 'string',
+                    example: 'Token sent to email',
+                  },
+                },
+              },
+              example: {
+                status: 'success',
+                message: 'Token sent to email',
+              },
+            },
+          },
         },
         400: { description: 'Email is required.' },
         404: { description: 'No user with given email.' },
@@ -112,6 +203,21 @@ const paths = {
       responses: {
         200: {
           description: 'Password reset and new token issued.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'success' },
+                  token: { type: 'string' },
+                },
+              },
+              example: {
+                status: 'success',
+                token: 'JWT_TOKEN_HERE',
+              },
+            },
+          },
         },
         400: {
           description:
@@ -143,10 +249,45 @@ const paths = {
       responses: {
         200: {
           description: 'Password updated successfully and new token issued.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'success' },
+                  token: { type: 'string' },
+                },
+              },
+              example: {
+                status: 'success',
+                token: 'JWT_TOKEN_HERE',
+              },
+            },
+          },
         },
         400: {
           description:
             'Missing fields or new password same as current password.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'faild' },
+                  message: {
+                    type: 'string',
+                    example:
+                      'Current password, new password and passwordConfirm are required',
+                  },
+                },
+              },
+              example: {
+                status: 'faild',
+                message:
+                  'Current password, new password and passwordConfirm are required',
+              },
+            },
+          },
         },
         401: {
           description: 'Invalid current password or user not authenticated.',

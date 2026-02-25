@@ -49,6 +49,7 @@ const paths = {
           in: 'query',
           description: 'Sort by field(s), prefix with - for descending.',
           schema: { type: 'string' },
+          example: '-createdAt,price,-ratingsAverage',
         },
         {
           name: 'fields',
@@ -60,6 +61,41 @@ const paths = {
       responses: {
         200: {
           description: 'List of tours.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string', example: 'success' },
+                  restult: { type: 'number', example: 2 },
+                  docs: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/Tour' },
+                  },
+                },
+              },
+              example: {
+                status: 'success',
+                restult: 2,
+                docs: [
+                  {
+                    _id: '60d21b4667d0d8992e610c85',
+                    name: 'The Forest Hiker',
+                    price: 497,
+                    difficulty: 'medium',
+                    ratingsAverage: 4.7,
+                  },
+                  {
+                    _id: '60d21b4967d0d8992e610c87',
+                    name: 'The Sea Explorer',
+                    price: 997,
+                    difficulty: 'difficult',
+                    ratingsAverage: 4.8,
+                  },
+                ],
+              },
+            },
+          },
         },
       },
     },
