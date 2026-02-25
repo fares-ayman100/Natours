@@ -51,7 +51,7 @@ app.use(cors());
 app.set('trust proxy', 1);
 
 app.post(
-  '/webhook-checkout',
+  '/api/v1/booking/webhook-checkout',
   express.raw({ type: 'application/json' }),
   webhook.webhookCheckout,
 );

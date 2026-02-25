@@ -22,7 +22,11 @@ const getTour = catchAsync(async (req, res, next) => {
     slug: req.params.slug,
   }).populate({
     path: 'reviews',
-    fields: 'review rating user',
+    select: 'review rating user',
+    populate: {
+      path: 'user',
+      select: 'name photo',
+    },
   });
 
   if (!tour) {
