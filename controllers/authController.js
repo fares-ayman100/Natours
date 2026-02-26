@@ -131,20 +131,18 @@ const signin = catchAsync(async (req, res, next) => {
 });
 
 const logOut = (req, res) => {
-  const cookieOption = {
-    expires: new Date(Date.now() + 10 * 1000),
+  res.clearCookie('jwt', {
     httpOnly: true,
     secure:
       req.secure || req.headers['x-forwarded-proto'] === 'https',
-  };
-  res.cookie('jwt', 'loggedout', cookieOption);
+  });
   res.status(200).json({ status: httpStatus.SUCCESS });
 };
 
 // Only for rendered pages, no errors!
 const isLoggedIN = async (req, res, next) => {
   try {
-    if (!req.cookies.jwt || req.cookies.jwt === 'loggedout') {
+    if (!req.cookies || !req.cookies.jwt) {
       res.locals.user = undefined;
       return next();
     }
@@ -168,6 +166,7 @@ const isLoggedIN = async (req, res, next) => {
     res.locals.user = currentUser;
     return next();
   } catch (err) {
+    res.locals.user = undefined;
     return next();
   }
 };
