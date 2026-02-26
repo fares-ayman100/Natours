@@ -150,31 +150,31 @@ const logOut = (req, res) => {
 // Only for rendered pages, no errors!
 const isLoggedIN = async (req, res, next) => {
   try {
-    if (req.cookies.jwt) {
-      //1) verification token
-      const decoded = await promisify(jwt.verify)(
-        req.cookies.jwt,
-        process.env.JWT_SECRET,
-      );
+    if (!req.cookies.jwt || req.cookies.jwt === 'loggedout')
+      return next();
 
-      //2) check if user still exist
-      const currentUser = await User.findById(decoded.id);
-      if (!currentUser) {
-        return next();
-      }
+    //1) verification token
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET,
+    );
 
-      //3) check if user change user after the token was issue
-      if (currentUser.changedPassword(decoded.iat)) {
-        return next();
-      }
-      // There is a looged in user
-      res.locals.user = currentUser;
+    //2) check if user still exist
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
       return next();
     }
+
+    //3) check if user change user after the token was issue
+    if (currentUser.changedPassword(decoded.iat)) {
+      return next();
+    }
+    // There is a looged in user
+    res.locals.user = currentUser;
+    return next();
   } catch (err) {
     return next();
   }
-  next();
 };
 
 const forgetPassword = catchAsync(async (req, res, next) => {
