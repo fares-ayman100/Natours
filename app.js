@@ -47,6 +47,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Implement CORS
 app.use(cors());
+app.options('*', cors());
 
 app.set('trust proxy', 1);
 
