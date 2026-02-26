@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const qs = require('qs');
 const path = require('path');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
@@ -62,7 +63,14 @@ app.use('/api', limiter);
 // Body parser reading the data form req.body
 app.use(express.json({ limit: '10kb' }));
 
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+//can handle nested filters (e.g. price[gte]=3)
+app.use((req, res, next) => {
+  const url = req.url.split('?')[1];
+  if (url) {
+    req.query = qs.parse(url);
+  }
+  next();
+});
 
 app.use(cookieParser());
 
