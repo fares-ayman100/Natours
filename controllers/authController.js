@@ -7,7 +7,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const Email = require('../utils/email');
 
-const sendToken = (user, statusCode, res, sendUser = true) => {
+const sendToken = (user, statusCode, req, res, sendUser = true) => {
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRESIN,
   });
@@ -15,12 +15,9 @@ const sendToken = (user, statusCode, res, sendUser = true) => {
   const cookieOption = {
     maxAge: process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     httpOnly: true,
+    secure:
+      req.secure || req.headers['x-forwarded-proto'] === 'https',
   };
-
-  if (process.env.NODE_ENV === 'production') {
-    cookieOption.secure = true;
-    cookieOption.sameSite = 'none';
-  }
 
   res.cookie('jwt', token, cookieOption);
 
@@ -113,7 +110,7 @@ const signup = catchAsync(async (req, res, next) => {
   const url = `${req.protocol}://${req.get('host')}/me`;
   await new Email(newUser, url).sendWelcome();
 
-  sendToken(newUser, 201, res);
+  sendToken(newUser, 201, req, res);
 });
 
 const signin = catchAsync(async (req, res, next) => {
@@ -130,19 +127,16 @@ const signin = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401));
   }
 
-  sendToken(user, 200, res, false);
+  sendToken(user, 200, req, res, false);
 });
 
 const logOut = (req, res) => {
   const cookieOption = {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
+    secure:
+      req.secure || req.headers['x-forwarded-proto'] === 'https',
   };
-
-  if (process.env.NODE_ENV === 'production') {
-    cookieOption.secure = true;
-    cookieOption.sameSite = 'none';
-  }
   res.cookie('jwt', 'loggedout', cookieOption);
   res.status(200).json({ status: httpStatus.SUCCESS });
 };
@@ -150,31 +144,31 @@ const logOut = (req, res) => {
 // Only for rendered pages, no errors!
 const isLoggedIN = async (req, res, next) => {
   try {
-    if (!req.cookies.jwt || req.cookies.jwt === 'loggedout')
-      return next();
+    if (req.cookies.jwt) {
+      //1) verification token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET,
+      );
 
-    //1) verification token
-    const decoded = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_SECRET,
-    );
+      //2) check if user still exist
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
 
-    //2) check if user still exist
-    const currentUser = await User.findById(decoded.id);
-    if (!currentUser) {
+      //3) check if user change user after the token was issue
+      if (currentUser.changedPassword(decoded.iat)) {
+        return next();
+      }
+      // There is a looged in user
+      res.locals.user = currentUser;
       return next();
     }
-
-    //3) check if user change user after the token was issue
-    if (currentUser.changedPassword(decoded.iat)) {
-      return next();
-    }
-    // There is a looged in user
-    res.locals.user = currentUser;
-    return next();
   } catch (err) {
     return next();
   }
+  next();
 };
 
 const forgetPassword = catchAsync(async (req, res, next) => {
@@ -246,7 +240,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
       new AppError('Password and confirm password are required', 400),
     );
   }
-  sendToken(user, 200, res, false);
+  sendToken(user, 200, req, res, false);
 });
 
 const updatedPassword = catchAsync(async (req, res, next) => {
@@ -288,7 +282,7 @@ const updatedPassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = passwordConfirm;
   await user.save();
 
-  sendToken(user, 200, res, false);
+  sendToken(user, 200, req, res, false);
 });
 
 module.exports = {
