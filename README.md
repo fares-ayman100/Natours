@@ -1,15 +1,22 @@
 # 🌍 Natours — Adventure Booking Application
 
-Natours is a full-stack tour booking application built with **Node.js, Express, MongoDB, Mongoose and Stripe**.  
+<div align="center">
+
+![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)
+![Express](https://img.shields.io/badge/Express-4.19-blue.svg)
+![MongoDB](https://img.shields.io/badge/MongoDB-9.1-brightgreen.svg)
+![License](https://img.shields.io/badge/License-ISC-yellow.svg)
+
+**A robust RESTful API for Caffinity - Coffee & Beverage E-commerce Platform**
+
+</div>
+
+---
+
+## 🎯 About
+
+**Natours** is a full-stack tour booking application built with **Node.js, Express, MongoDB, Mongoose and Stripe**.  
 This project was implemented following Jonas Schmedtmann's Node.js Bootcamp and demonstrates real-world features like authentication, payments, webhooks, and security best practices.
-
----
-
-[![License](https://img.shields.io/badge/license-Educational-blue.svg)](#)  
-[![Node.js](https://img.shields.io/badge/node-%3E%3D14-brightgreen.svg)](#)  
-[![MongoDB](https://img.shields.io/badge/mongodb-%3E%3D4.0-47A248.svg)](#)
-
----
 
 ### 🌐 Live Demo
 
@@ -20,61 +27,88 @@ This project was implemented following Jonas Schmedtmann's Node.js Bootcamp and 
 
 ## ✨ Features
 
-### User
-- Sign up, login, protect routes with JWT (cookies)
-- Password reset flow via email
-- Update user profile & upload photo
+### 🔐 Authentication & Authorization
+- ✅ User registration and login
+- ✅ JWT-based authentication
+- ✅ Password reset via email
+- ✅ Role-based access control (User, Admin)
+- ✅ Protected routes middleware
+- ✅ Secure password hashing with bcrypt
 
-### Tours
-- List tours with pagination, filtering, search, and sorting
-- Detailed tour pages with images, duration, price, reviews
-- Map integration (Leaflet) to show tour locations
+### 👥 User Management
+- ✅ User profile management
+- ✅ Update user information
+- ✅ Soft delete (deactivate account)
+- ✅ Admin user management
 
-### Booking & Payments
-- Stripe Checkout session integration
-- Secure booking creation using Stripe Webhooks (recommended)
-- Booking confirmation email sent after successful payment
+### 🏞️ Tours
+- ✅ List tours with pagination, filtering, search, and sorting
+- ✅ Detailed tour pages with images, duration, price, reviews
+- ✅ Map integration (Leaflet) to show tour locations
 
-### Email (notifications)
-- Sends booking confirmation / invoice emails
-- Sends welcome and password reset emails
-- Configurable email provider via environment variables
+### 💳 Order Processing
+- ✅ Stripe payment integration
+- ✅ Checkout session creation
+- ✅ Order management (Admin)
+- ✅ Order history for users
+- ✅ Webhook handling for payment confirmation
+- ✅ Order status tracking
 
-### Security & Performance
-- Rate limiting, data sanitization, XSS/HPP protection
-- Secure headers (Helmet)
-- Compression and static file serving
+### ⭐ Reviews System
+- ✅ Create reviews on products
+- ✅ Get all reviews
+- ✅ Get reviews by product
+- ✅ Update and delete reviews
+- ✅ Automatic rating calculation
+
+### 📩 Email (notifications)
+- ✅ Welcome Email when a new user signs up
+- ✅ Password Reset Email when a user requests to reset their password
+- ✅ Booking Confirmation Email after a successful purchase
+  
+### 🛡️ Security
+- ✅ Helmet.js for HTTP security headers
+- ✅ Rate limiting (100 requests/hour)
+- ✅ Data sanitization against NoSQL injection
+- ✅ XSS protection
+- ✅ CORS enabled
+- ✅ Parameter pollution prevention
+- ✅ Secure cookies (httpOnly, secure in production)
 
 ---
 
 ## 🛠 Tech Stack
 
-**Backend:** Node.js, Express, MongoDB, Mongoose, Stripe API, Pug (templating)  
-**Frontend:** Server-rendered pages (Pug) + Vanilla JS + Leaflet maps  
-**Dev Tools:** nodemon, eslint (optional)
+**Backend:** Node.js, Express, MongoDB, Mongoose, Stripe API, Pug (templating)
+**Dev Tools:** nodemon, Morgan
+**Email Service:** Resend , nodemailer
+**Documentation:** Swagger UI
+**Other Utilities** validator ,slugify , Pug
 
 ---
 
 ## 📦 Installation & Setup
 
-### 1. Clone
+### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/fares-ayman100/Natours.git
 cd Natours
 ```
 
 ### 2. Install
+
 ```bash
 npm install
 ```
 
-### 3. Environment Variables
+### 3. Set Up Environment Variables
+
 ```bash
 NODE_ENV=development
 PORT=3000
 
 DATABASE=<your MongoDB connection string>
-DATABASE_PASSWORD=<db password>
 
 JWT_SECRET=<your jwt secret>
 JWT_EXPIRES_IN=90d
@@ -86,15 +120,23 @@ EMAIL_USERNAME=<email username>
 EMAIL_PASSWORD=<email password>
 EMAIL_FROM="Natours <no-reply@natours.com>"
 
-STRIPE_SECRET_KEY=<stripe secret key>
-STRIPE_WEBHOOK_SECRET=<stripe webhook secret>
+RESEND_API_KEY=<API KEY>
 
-FRONTEND_URL=https://natours.obl.ee
+STRIPE_SECRET_KEY=<stripe secret key>
+STRIPE_WEBHOOK_SIGNATURE=<stripe webhook secret>
+
 ```
 
 ### 4. Run (development)
+
 ```bash
-npm run start:dev
+npm start
+```
+
+### 5. Production Mode
+
+```bash
+npm run start:prod
 ```
 ---
 
