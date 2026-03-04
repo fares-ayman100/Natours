@@ -153,3 +153,35 @@ Natours/
 ├─ server.js
 └─ README.md
 ```
+
+---
+
+## 📄 License
+
+This project is licensed under the ISC License.
+
+---
+
+## 👤 Author
+
+**Fares Ayman**
+
+- GitHub: [Fares Ayman](https://github.com/fares-ayman100)
+- Email: fareshe73@gmail.com
+
+---
+
+## 🙏 Acknowledgments
+
+- Express.js community
+- MongoDB team
+- Stripe for payment processing
+- All open-source contributors
+
+---
+
+<div align="center">
+
+⭐ Star this repo if you find it helpful!
+
+</div>
