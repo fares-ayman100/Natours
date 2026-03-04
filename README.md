@@ -182,6 +182,8 @@ This project is licensed under the ISC License.
 
 <div align="center">
 
+Made with ❤️ for travelers
+
 ⭐ Star this repo if you find it helpful!
 
 </div>
