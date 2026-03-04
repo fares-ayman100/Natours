@@ -7,7 +7,7 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-9.1-brightgreen.svg)
 ![License](https://img.shields.io/badge/License-ISC-yellow.svg)
 
-**A robust RESTful API for Caffinity - Coffee & Beverage E-commerce Platform**
+**A robust RESTful API for Natours - Booking Tours Platform**
 
 </div>
 
