@@ -11,13 +11,10 @@ This project was implemented following Jonas Schmedtmann's Node.js Bootcamp and 
 
 ---
 
-## 🚀 Live Demo
-**https://natours-fares.vercel.app/**
+### 🌐 Live Demo
 
----
-
-## 📋 API DOC
-**https://natours-fares.vercel.app/api-docs/**
+- 🌍 Website: https://natours-fares.vercel.app
+- 📋 API Documentation: https://natours-fares.vercel.app/api-docs/
 
 ---
 
